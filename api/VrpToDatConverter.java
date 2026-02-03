@@ -5,8 +5,8 @@ public class VrpToDatConverter {
 
 	public static void main(String[] args) {
 
-		String inputPath = "../src/cantines.txt";
-		String outputPath = "../CPLEX/cantines_test.dat";
+		String inputPath = "../src/tai75a.txt";
+		String outputPath = "../CPLEX/tai75a_test.dat";
 
 		try {
 			convert(inputPath, outputPath);
@@ -22,6 +22,7 @@ public class VrpToDatConverter {
 
 		// Lecture du fichier d'entrée
 		Scanner sc = new Scanner(new File(inputPath));
+		sc.useLocale(Locale.US);
 
 		int nbClients = sc.nextInt();
 		double bestSolution = sc.nextDouble();
