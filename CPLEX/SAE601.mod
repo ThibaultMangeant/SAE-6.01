@@ -1,7 +1,7 @@
 /*********************************************
  * OPL 22.1.1.0 Model
- * Author: bj220781
- * Creation Date: 27 janv. 2025 at 10:07:01
+ * Author: Groupe 2 : BONDU Justine, MANGEANT Thibault, RAVENEL Martin
+ * Creation Date: 02 fevr. 2026 at 08:40:03
  *********************************************/
 
 // Définition des ensembles et paramètres
@@ -17,6 +17,29 @@ int Demande[Noeuds] = ...;            // Demande des clients
 int Qmax = ...;                       // Capacité maximale des véhicules
 int idDepot = 1;                      // l'indice du dépôt
 
+execute
+{
+  var totalDemande = 0;
+  var totalCapacity = Qmax * nbVehicules;
+  
+  for (var i in Noeuds)
+	{
+	  if (i != idDepot)
+	  {
+	   totalDemande += Demande[i];
+	  }
+	}
+
+    if (totalDemande > totalCapacity)
+    {
+      writeln("Aucune solution : La demande dépasse la capacité totale des véhicules");
+      writeln("Détails :");
+      writeln("Nombre de véhicules : " + nbVehicules);
+      writeln("Capacité totale des véhicules " + totalCapacity);
+      writeln("Demande totale : " + totalDemande);
+    }
+}
+
 // Variables de décision
 dvar boolean x[Noeuds][Noeuds][Vehicules]; // 1 si le véhicule v passe de i à j, 0 sinon
 dvar int+ u[Noeuds][Vehicules];          // Variable MTZ pour éviter les sous-tours
@@ -26,6 +49,12 @@ minimize sum(v in Vehicules, i in Noeuds, j in Noeuds : i != j) Distance[i][j] *
 
 // Contraintes
 subject to {
+  
+  // Le nombre de véhicules somme des demandes / nbVehicule
+  /*forall(v in Vehicules) {
+    sum(i in Noeuds, j in Noeuds) Demande[i] / nbVehicules >= Qmax;
+  }*/
+  
   // Tous les clients doivent être visités une fois
   forall(i in Noeuds : i != idDepot)
     sum(v in Vehicules, j in Noeuds : j != i) x[i][j][v] == 1;
@@ -62,12 +91,12 @@ subject to {
 execute {
     var totalDistance = 0;
     var nbVehiculeSorti = 0;
-
+    
     writeln("Résultats de l'optimisation:");
-
-    // Parcours des véhicules pour afficher leurs tournées
+ 
+  	// Parcours des véhicules pour afficher leurs tournées
     for (var v in Vehicules) {
-        var distV = 0;
+        var distVStr = "";
         var distVCumul = 0;
         var qteDepose = Qmax + " -> ";
         var vehiculeSorti = false;
@@ -92,10 +121,10 @@ execute {
             // Si un client suivant a été trouvé
             if (nextNode != -1) {
                 vehiculeSorti = true;
-                clientVisiter = (nextNode - 1) + " -> " + clientVisiter;  // Ajoute le client à la tournée
+                clientVisiter += " -> " + (nextNode - 1);  // Ajoute le client à la tournée
                 cumulSoustraction -= Demande[nextNode] * x[currentNode][nextNode][v].solutionValue; 
                 qteDepose += cumulSoustraction + " -> ";
-                distV += Distance[currentNode][nextNode] + " -> ";
+                distVStr += Distance[currentNode][nextNode] + " -> ";
                 distVCumul += Distance[currentNode][nextNode];
                 capaciteUtilisee += Demande[nextNode];
                 currentNode = nextNode;
@@ -105,9 +134,9 @@ execute {
         }
 
         // Retour au dépôt
-        distV += Distance[currentNode][idDepot];
+        distVStr += Distance[currentNode][idDepot];
         distVCumul += Distance[currentNode][idDepot];
-        clientVisiter = "Dépôt -> " + clientVisiter; 
+        clientVisiter += " -> Dépôt";
 
         if (vehiculeSorti) {  // Si le véhicule a réellement effectué un trajet
             nbVehiculeSorti += 1;
@@ -117,7 +146,7 @@ execute {
             writeln("  Tournée      : ", clientVisiter);
             var capaciteRestante = Qmax - capaciteUtilisee;
             writeln("  Qté déposées : ", qteDepose, capaciteRestante);
-            writeln("  Distance parcourue : ", distV);
+            writeln("  Distance parcourue : ", distVStr);
             writeln("  Capacité utilisée : ", capaciteUtilisee);
             totalDistance += distVCumul;
         }
@@ -135,5 +164,5 @@ execute {
     writeln("==============================");
     writeln("Statistiques globales :");
     writeln("  Nombre total de véhicules utilisés : ", nbVehiculeSorti, " / ", nbVehicules);
-    writeln("  Distance totale parcourue : ", totalDistance);
+    writeln("  Distance totale parcourue : ", totalDistance);   
 };
