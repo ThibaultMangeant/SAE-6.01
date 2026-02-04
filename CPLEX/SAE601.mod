@@ -50,12 +50,8 @@ minimize sum(v in Vehicules, i in Noeuds, j in Noeuds : i != j) Distance[i][j] *
 // Contraintes
 subject to {
   
-  // Le nombre de véhicules somme des demandes / nbVehicule
-  /*forall(v in Vehicules) {
-    sum(i in Noeuds, j in Noeuds) Demande[i] / nbVehicules >= Qmax;
-  }*/
   
-  // Tous les clients doivent être visités une fois
+  // Tous les clients doivent être visités une fois et une seule fois par un véhicule
   forall(i in Noeuds : i != idDepot)
     sum(v in Vehicules, j in Noeuds : j != i) x[i][j][v] == 1;
   
@@ -64,10 +60,9 @@ subject to {
     sum(j in Noeuds : j != i) x[j][i][v] == sum(j in Noeuds : j != i) x[i][j][v];
    }
 
-
   // Capacité restante doit rester dans les limites [0, Qmax]
   forall(v in Vehicules) {
-    sum(i in Noeuds, j in Noeuds) Demande[i] * x[i][j][v] <= Qmax;
+    sum(i in Noeuds : i != idDepot, j in Noeuds) Demande[i] * x[i][j][v] <= Qmax;
   }
   
   // Contraintes MTZ pour éviter les sous-tours
@@ -85,6 +80,10 @@ subject to {
     u[i][v] >= 0;
     u[i][v] <= Qmax;
   }
+  
+  // Au moins un véhicule utilisé pour les tournées
+  sum(v in Vehicules, j in Noeuds : j != idDepot) x[idDepot][j][v] >= 1;
+  
   
 }
 
