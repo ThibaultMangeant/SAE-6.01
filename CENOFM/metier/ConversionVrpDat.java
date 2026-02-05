@@ -1,8 +1,5 @@
 package CENOFM.metier;
 
-import CENOFM.metier.LectureVrp.*;
-import CENOFM.metier.Noeud;
-
 import java.io.*;
 import java.util.*;
 
