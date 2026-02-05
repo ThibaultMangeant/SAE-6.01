@@ -1,4 +1,3 @@
-// Représente un client ou le dépôt
 class Noeud {
     int id;
     double x, y;
