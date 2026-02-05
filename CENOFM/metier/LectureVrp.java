@@ -7,11 +7,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class LectureVrp
-{
+public class LectureVrp {
 
-	public DonneesVrp charger(String cheminFichier, int nbVehicules) throws IOException
-	{
+	public DonneesVrp charger(String cheminFichier, int nbVehicules) throws IOException {
 		DonneesVrp donnees = new DonneesVrp();
 		donnees.nbVehicules = nbVehicules;
 		Scanner sc = new Scanner(new File(cheminFichier));

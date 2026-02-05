@@ -182,15 +182,18 @@ public class RecuitSimuleCVRP {
 		return total;
 	}
 
-	private void afficherResultats(Solution s) {
-		System.out.println("\n--- MEILLEURE SOLUTION TROUVÉE ---");
-		System.out.println("Distance totale : " + String.format("%.2f", s.distanceTotale));
-		System.out.println("Nombre de véhicules : " + s.tournees.size());
+	public String afficherResultats(Solution s) {
+		String resultat = "\n--- SOLUTION ---\n";
+
+		resultat += "Distance totale : " + String.format("%.2f", s.distanceTotale) + "\n";
+		resultat += "Nombre de véhicules : " + s.tournees.size() + "\n";
+
 		for (int i = 0; i < s.tournees.size(); i++) {
-			System.out.print("Véhicule " + (i + 1) + " : Dépôt");
+			resultat += "Véhicule " + (i + 1) + " : Dépôt";
 			for (Noeud c : s.tournees.get(i))
-				System.out.print(" -> " + c.id);
-			System.out.println(" -> Dépôt");
+				resultat += " -> " + c.id;
+			resultat += " -> Dépôt\n";
 		}
+		return resultat;
 	}
 }

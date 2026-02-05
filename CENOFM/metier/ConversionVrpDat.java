@@ -3,14 +3,12 @@ package CENOFM.metier;
 import java.io.*;
 import java.util.*;
 
-public class ConversionVrpDat
-{
+public class ConversionVrpDat {
 
-	public void convertir(DonneesVrp donnees, String outputPath) throws IOException
-	{
+	public void convertir(String txt, int nbVehicules, String outputPath) throws IOException {
 
-		//LectureVrp lecteur = new LectureVrp();
-		//DonneesVrp donnees = lecteur.charger(txt, nbVehicules);
+		LectureVrp lecteur = new LectureVrp();
+		DonneesVrp donnees = lecteur.charger(txt, nbVehicules);
 		Noeud[] noeuds = donnees.getTableauNoeudsComplet();
 
 		PrintWriter writer = new PrintWriter(new FileWriter(outputPath));
