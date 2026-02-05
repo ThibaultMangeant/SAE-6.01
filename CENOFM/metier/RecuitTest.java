@@ -12,7 +12,7 @@ public class RecuitTest {
 			rs.resoudre();
 
 		} catch (Exception e) {
-			System.err.println("Erreur lors du test : " + e.getMessage());
+			System.err.println("Erreur lors du test de recuit : " + e.getMessage());
 			e.printStackTrace();
 		}
 	}

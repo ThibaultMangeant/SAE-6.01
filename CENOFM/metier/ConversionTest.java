@@ -14,7 +14,7 @@ public class ConversionTest {
 			System.out.println("Conversion terminée ! Le fichier " + outputPath +
 					" est prêt.");
 		} catch (IOException e) {
-			System.err.println("Erreur : " + e.getMessage());
+			System.err.println("Erreur lors du test de la conversion : " + e.getMessage());
 		}
 	}
 }
