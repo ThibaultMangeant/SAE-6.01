@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class RecuitTest {
 	public static void main(String[] args) {
 		try {
-			Scanner sc = new Scanner(new File("../src/cantines.txt"));
+			Scanner sc = new Scanner(new File("../../src/cantines.txt"));
 			sc.useLocale(Locale.US);
 
 			int nbNoeuds = sc.nextInt();

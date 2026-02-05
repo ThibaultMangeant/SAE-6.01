@@ -113,8 +113,12 @@ public class PanelImport extends JPanel implements ActionListener
 			{
 				try (BufferedReader br = new BufferedReader(new FileReader(cheminFichier1)))
 				{
+					int nbV = NombreVehi();
+					this.frame.extractionDonnee(this.txtVrp.getText(), nbV);
+
 					this.txtVrp.read(br, null);
 					this.txtVrp.setCaretPosition(0); // revenir en haut du texte
+
 				} catch (IOException ex)
 				{
 					JOptionPane.showMessageDialog(this, "Erreur lors de la lecture du fichier", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -133,6 +137,31 @@ public class PanelImport extends JPanel implements ActionListener
 			this.frame.telechargerContenue(this.frame.getTextDat(), ".dat");
 		}
 */
+	}
+	
+	private int NombreVehi()
+	{
+		JTextArea champ = new JTextArea();
+		champ.setFont(new Font("Montserrat", Font.PLAIN, 14));
+
+		Object[] options = { "Valider" }; // ✅ seul bouton disponible
+
+		while (true)
+		{
+			int result = JOptionPane.showOptionDialog(this, champ, "Entrez le nombre de véhicules (entier positif)",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0] // bouton
+			);
+
+			try
+			{
+				int valeur = Integer.parseInt(champ.getText().trim());
+				if (valeur > 0) { return valeur; /* nombre valide */ }
+			} catch (NumberFormatException ignored) {  }
+
+			// Valeur invalide → message et redemande
+			JOptionPane.showMessageDialog(this, "Veuillez entrer un nombre entier strictement positif.",
+					"Valeur invalide", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private String selectionnerFichier(String titre)

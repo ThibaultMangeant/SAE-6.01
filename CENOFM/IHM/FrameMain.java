@@ -44,7 +44,8 @@ public class FrameMain extends JFrame
 		//return this.vrpDatConv.getRes();
 		return null;
 	}
-
+	
+	public void extractionDonnee( String txt, int nbV ) { this.ct.extractionDonnee( txt, nbV );}
 	public void convertir(String txt, String outputPath) { this.ct.convertir(txt, outputPath); }
 
 	public static void main(String[] args) { new FrameMain(null); }
