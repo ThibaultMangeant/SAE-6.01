@@ -15,7 +15,8 @@ public class LectureVrp {
 		Scanner sc = new Scanner(new File(cheminFichier));
 		sc.useLocale(Locale.US);
 
-		if (!sc.hasNext()) {
+		if (!sc.hasNext())
+		{
 			sc.close();
 			throw new IOException("Le fichier est vide");
 		}
@@ -28,7 +29,8 @@ public class LectureVrp {
 		double depotY = sc.nextDouble();
 		donnees.depot = new Noeud(0, depotX, depotY, 0);
 
-		for (int i = 0; i < donnees.nbClients; i++) {
+		for (int i = 0; i < donnees.nbClients; i++)
+		{
 			int id = sc.nextInt();
 			double x = sc.nextDouble();
 			double y = sc.nextDouble();

@@ -20,28 +20,21 @@ public class DonneesVrp {
 		return tab;
 	}
 
-	public int getNbClients() {
-		return nbClients;
+	public int getNbClients() { return nbClients; }
+	public int getNbVehicules() { return nbVehicules; }
+	public double getBestSolution() { return bestSolution; }
+	public int getqMax() { return qMax; }
+	public Noeud getDepot() { return depot; }
+	public List<Noeud> getClients() { return clients; }
+	public DonneesVrp getDonneesVrp() { return this; }
+
+	@Override
+	public String toString()
+	{
+		return "DonneesVrp [nbClients=" + nbClients + ", nbVehicules=" + nbVehicules + ", bestSolution=" + bestSolution
+				+ ", qMax=" + qMax + ", depot=" + depot + ", clients=" + clients + "]";
 	}
 
-	public int getNbVehicules() {
-		return nbVehicules;
-	}
-
-	public double getBestSolution() {
-		return bestSolution;
-	}
-
-	public int getqMax() {
-		return qMax;
-	}
-
-	public Noeud getDepot() {
-		return depot;
-	}
-
-	public List<Noeud> getClients() {
-		return clients;
-	}
+	
 
 }

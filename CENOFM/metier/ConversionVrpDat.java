@@ -5,7 +5,7 @@ import java.util.*;
 
 public class ConversionVrpDat {
 
-	public static void convertir(String txt, int nbVehicules, String outputPath) throws IOException {
+	public void convertir(String txt, int nbVehicules, String outputPath) throws IOException {
 
 		LectureVrp lecteur = new LectureVrp();
 		DonneesVrp donnees = lecteur.charger(txt, nbVehicules);
@@ -24,16 +24,19 @@ public class ConversionVrpDat {
 		writer.println();
 
 		writer.print("Demande = [");
-		for (int i = 0; i < noeuds.length; i++) {
+		for (int i = 0; i < noeuds.length; i++)
+		{
 			writer.print(noeuds[i].demande + (i == noeuds.length - 1 ? "" : ", "));
 		}
 		writer.println("];");
 		writer.println();
 
 		writer.println("Distance = [");
-		for (int i = 0; i < noeuds.length; i++) {
+		for (int i = 0; i < noeuds.length; i++)
+		{
 			writer.print(" [");
-			for (int j = 0; j < noeuds.length; j++) {
+			for (int j = 0; j < noeuds.length; j++)
+			{
 				double dist = noeuds[i].distance(noeuds[j]);
 
 				writer.printf(Locale.US, "%.2f", dist);
