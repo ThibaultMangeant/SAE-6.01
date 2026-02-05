@@ -1,4 +1,4 @@
-package api.IHM;
+package CENOFM.IHM;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -14,7 +14,6 @@ import java.awt.Color;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -22,7 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class PanelImport extends JPanel implements ActionListener
 {
@@ -34,8 +32,9 @@ public class PanelImport extends JPanel implements ActionListener
 	private JButton btnConvertir;
 	private JButton btnRecuit;
 
-	public static Color CFond = Color.decode("#9abddb");
+	public static Color CFondBtn = Color.decode("#9abddb");
 	public static Color CTexte = Color.decode("#1c4587");
+	public static Color CFond = Color.decode("#abcce7");
 	private Font ft;
 
 	private String dernierDossier = null;
@@ -53,7 +52,7 @@ public class PanelImport extends JPanel implements ActionListener
 
 		this.txtVrp = new JTextArea("Importer un fichier correspondant a la structure demander.");
 
-		Border border = BorderFactory.createLineBorder(FrameMain.COULEUR);
+		Border border = BorderFactory.createLineBorder(CFond);
 		border = BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		this.txtVrp.setWrapStyleWord(true);
@@ -63,7 +62,7 @@ public class PanelImport extends JPanel implements ActionListener
 		JLabel titreLbl = new JLabel("Convertisseur et recuit simulé");
 		titreLbl.setFont(new Font("Montserrat", Font.BOLD, 24));
 
-		titreLbl.setForeground(CFond); // Couleur du texte
+		titreLbl.setForeground(CFondBtn); // Couleur du texte
 		this.setBackground(null); // Couleur du fond
 
 
@@ -91,8 +90,8 @@ public class PanelImport extends JPanel implements ActionListener
 	{
 		JButton btn = new JButton(txt);
 
-		btn.setBorder(BorderFactory.createLineBorder(FrameMain.COULEUR.darker(), 2));
-		btn.setBackground(CFond);
+		btn.setBorder(BorderFactory.createLineBorder(CFond.darker(), 2));
+		btn.setBackground(CFondBtn);
 		btn.setFocusable(false);
 		btn.setForeground(CTexte);
 
