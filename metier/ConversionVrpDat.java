@@ -50,7 +50,7 @@ public class ConversionVrpDat {
 		PrintWriter writer = new PrintWriter(new FileWriter(outputPath));
 
 		writer.println("/*********************************************");
-		writer.println(" * OPL Data generated from Text Format");
+		writer.println(" * OPL .dat généré par format .txt");
 		writer.println(" *********************************************/");
 		writer.println();
 
