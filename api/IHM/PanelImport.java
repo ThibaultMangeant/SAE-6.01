@@ -38,6 +38,8 @@ public class PanelImport extends JPanel implements ActionListener
 	public static Color CTexte = Color.decode("#1c4587");
 	private Font ft;
 
+	private String dernierDossier = null;
+
 	public PanelImport(FrameMain fm)
 	{
 		this.frame = fm;
@@ -132,24 +134,14 @@ public class PanelImport extends JPanel implements ActionListener
 		}
 */
 	}
-/* 
+
 	private String selectionnerFichier(String titre)
 	{
 		FileDialog dialogueFichier = new FileDialog((JFrame) null, titre, FileDialog.LOAD);
-		dialogueFichier.setFile("*.txt"); // Filtre
-		dialogueFichier.setVisible(true);
 
-		String nomFichier = dialogueFichier.getFile();
-		String dossier = dialogueFichier.getDirectory();
-
-		if (nomFichier != null && dossier != null) { return new File(dossier, nomFichier).getAbsolutePath();}
-
-		return null;
-	}
-*/
-	private String selectionnerFichier(String titre)
-	{
-		FileDialog dialogueFichier = new FileDialog((JFrame) null, titre, FileDialog.LOAD);
+		// Réouvrir dans le dernier dossier utilisé
+		if (dernierDossier != null) { dialogueFichier.setDirectory(dernierDossier); }
+		dialogueFichier.setFile("*.txt");
 		dialogueFichier.setVisible(true);
 
 		String nomFichier = dialogueFichier.getFile();
@@ -157,15 +149,18 @@ public class PanelImport extends JPanel implements ActionListener
 
 		if (nomFichier != null && dossier != null)
 		{
+			// Autoriser uniquement les .txt
 			if (!nomFichier.toLowerCase().endsWith(".txt"))
 			{
-				JOptionPane.showMessageDialog(this, "Veuillez sélectionner un fichier .txt", "Fichier invalide",
-						JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Veuillez sélectionner un fichier .txt", "Fichier invalide", JOptionPane.WARNING_MESSAGE);
 				return null;
 			}
+			// Mémorisation du dossier
+			dernierDossier = dossier;
 			return new File(dossier, nomFichier).getAbsolutePath();
 		}
 
 		return null;
 	}
+
 }
