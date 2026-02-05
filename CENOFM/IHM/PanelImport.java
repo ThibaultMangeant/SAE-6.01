@@ -25,8 +25,12 @@ import javax.swing.border.Border;
 public class PanelImport extends JPanel implements ActionListener
 {
 	private FrameMain frame;
+	private JPanel panelBtn;
+	private JPanel panelCentre;
 	private JTextArea txtVrp;
 	private JScrollPane sp;
+	private JTextArea txtResoudre;
+	private JScrollPane spResoudre;
 
 	private JButton btnImporter;
 	private JButton btnConvertir;
@@ -51,6 +55,7 @@ public class PanelImport extends JPanel implements ActionListener
 		this.btnRecuit = styliserBouton("Recuit simulé");
 
 		this.txtVrp = new JTextArea("Importer un fichier correspondant a la structure demander.");
+		this.txtResoudre = new JTextArea("  ");
 
 		Border border = BorderFactory.createLineBorder(CFond);
 		border = BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -58,28 +63,29 @@ public class PanelImport extends JPanel implements ActionListener
 		this.txtVrp.setWrapStyleWord(true);
 		this.txtVrp.setBorder(border);
 		this.txtVrp.setEditable(false);
-
-		JLabel titreLbl = new JLabel("Convertisseur et recuit simulé");
-		titreLbl.setFont(new Font("Montserrat", Font.BOLD, 24));
-
-		titreLbl.setForeground(CFondBtn); // Couleur du texte
-		this.setBackground(null); // Couleur du fond
+		this.txtResoudre.setWrapStyleWord(true);
+		this.txtResoudre.setBorder(border);
+		this.txtResoudre.setEditable(false);
 
 
-		JPanel panelBtn = new JPanel(new GridLayout(1, 3, 0, 3));
+		this.panelBtn = new JPanel(new GridLayout(1, 3, 0, 3));
 		this.ft = new Font("Montserrat", Font.BOLD, 18);
-		btnImporter.setFont(this.ft);
-		btnConvertir.setFont(this.ft);
-		btnRecuit.setFont(this.ft);
-		panelBtn.add(this.btnImporter);
-		panelBtn.add(this.btnConvertir);
-		panelBtn.add(this.btnRecuit);
-		this.add(panelBtn, BorderLayout.NORTH);
+		this.btnImporter.setFont(this.ft);
+		this.btnConvertir.setFont(this.ft);
+		this.btnRecuit.setFont(this.ft);
+		this.panelBtn.add(this.btnImporter);
+		this.panelBtn.add(this.btnConvertir);
+		this.panelBtn.add(this.btnRecuit);
+		this.add(this.panelBtn, BorderLayout.NORTH);
 
+		this.panelCentre = new JPanel(new GridLayout(1, 2, 0, 3));
 		this.sp = new JScrollPane();
 		this.sp.setViewportView(this.txtVrp);
+		this.spResoudre = new JScrollPane();
+		this.spResoudre.setViewportView(this.txtResoudre);
 
-		this.add(this.sp, BorderLayout.CENTER);
+		this.panelCentre.add(this.sp);
+		this.add(this.panelCentre, BorderLayout.CENTER);
 
 		this.btnImporter.addActionListener(this);
 		this.btnConvertir.addActionListener(this);
@@ -112,11 +118,10 @@ public class PanelImport extends JPanel implements ActionListener
 			{
 				try (BufferedReader br = new BufferedReader(new FileReader(cheminFichier1)))
 				{
-					int nbV = NombreVehi();
-					this.frame.extractionDonnee(this.txtVrp.getText(), nbV);
-
 					this.txtVrp.read(br, null);
 					this.txtVrp.setCaretPosition(0); // revenir en haut du texte
+					int nbV = NombreVehi();
+					this.frame.extractionDonnee(this.txtVrp.getText(), nbV);
 
 				} catch (IOException ex)
 				{
@@ -128,10 +133,17 @@ public class PanelImport extends JPanel implements ActionListener
 		if (e.getSource() == this.btnConvertir)
 		{
 			String cheminSortie = enregistrerNouvFichier("Enregistrer le fichier DAT", ".dat");
-			if (cheminSortie != null) { this.frame.convertir(this.txtVrp.getText(), cheminSortie); }
+			if (cheminSortie != null) { this.frame.convertir( cheminSortie); }
 		}
  
-		if (e.getSource() == this.btnRecuit) { this.frame.resoudre(  ); }
+		if (e.getSource() == this.btnRecuit) { 
+			//this.txtResoudre =new JTextArea( "" + this.frame.resoudre());  
+			this.txtResoudre = new JTextArea("Ja passe !" );
+			this.spResoudre.setViewportView(this.txtResoudre);
+			this.panelCentre.add(this.spResoudre);
+			this.add(this.panelCentre, BorderLayout.CENTER);
+			System.out.println("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+		}
 
 	}
 	
