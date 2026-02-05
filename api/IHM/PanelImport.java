@@ -2,94 +2,170 @@ package api.IHM;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
+import java.awt.Font;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.awt.Dimension;
+import java.awt.FileDialog;
+import java.awt.Color;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.Border;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class PanelImport extends JPanel implements ActionListener
 {
 	private FrameMain frame;
-	private JTextArea txtDat;
+	private JTextArea txtVrp;
+	private JScrollPane sp;
 
 	private JButton btnImporter;
-	private JButton btnCopier;
-	private JButton btnExporter;
+	private JButton btnConvertir;
+	private JButton btnRecuit;
+
+	public static Color CFond = Color.decode("#9abddb");
+	public static Color CTexte = Color.decode("#1c4587");
+	private Font ft;
 
 	public PanelImport(FrameMain fm)
 	{
+		this.frame = fm;
 		this.setLayout(new BorderLayout());
 		this.setLocation(10, 10);
 		this.setSize(800, 500);
 
-		this.btnImporter = FrameMain.styliserBouton("Importer");
-		this.btnCopier = FrameMain.styliserBouton("Copier");
-		this.btnExporter = FrameMain.styliserBouton("Exporter");
+		this.btnImporter = styliserBouton("Importer");
+		this.btnConvertir = styliserBouton("Convertir en dat");
+		this.btnRecuit = styliserBouton("Recuit simulé");
 
-		this.txtDat = FrameMain.styliserTextArea("Importer un fichier correspondant a la structure demander.");
-		this.txtDat.setEditable(false);
+		this.txtVrp = new JTextArea("Importer un fichier correspondant a la structure demander.");
 
-		this.add(FrameMain.panelTitre("Importer le fichier Mistic", FrameMain.COULEUR), BorderLayout.NORTH);
+		Border border = BorderFactory.createLineBorder(FrameMain.COULEUR);
+		border = BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JPanel panelBtn = new JPanel(new GridLayout(3, 1, 0, 3));
+		this.txtVrp.setWrapStyleWord(true);
+		this.txtVrp.setBorder(border);
+		this.txtVrp.setEditable(false);
+
+		JLabel titreLbl = new JLabel("Convertisseur et recuit simulé");
+		titreLbl.setFont(new Font("Montserrat", Font.BOLD, 24));
+
+		titreLbl.setForeground(CFond); // Couleur du texte
+		this.setBackground(null); // Couleur du fond
+
+
+		JPanel panelBtn = new JPanel(new GridLayout(1, 3, 0, 3));
+		this.ft = new Font("Montserrat", Font.BOLD, 18);
+		btnImporter.setFont(this.ft);
+		btnConvertir.setFont(this.ft);
+		btnRecuit.setFont(this.ft);
 		panelBtn.add(this.btnImporter);
-		panelBtn.add(this.btnCopier);
-		panelBtn.add(this.btnExporter);
-		this.add(panelBtn, BorderLayout.EAST);
+		panelBtn.add(this.btnConvertir);
+		panelBtn.add(this.btnRecuit);
+		this.add(panelBtn, BorderLayout.NORTH);
 
-		JScrollPane sp = new JScrollPane();
-		sp.setViewportView(this.txtDat);
+		this.sp = new JScrollPane();
+		this.sp.setViewportView(this.txtVrp);
 
-		this.add(sp, BorderLayout.CENTER);
+		this.add(this.sp, BorderLayout.CENTER);
 
 		this.btnImporter.addActionListener(this);
-		this.btnCopier.addActionListener(this);
-		this.btnExporter.addActionListener(this);
+		this.btnConvertir.addActionListener(this);
+		this.btnRecuit.addActionListener(this);
 	}
 
-	/** Structure du panel. */
-	public void dessinerInterface()
+	public static JButton styliserBouton(String txt)
 	{
-		this.txtDat.setText(this.frame.getTextDat());
-		this.btnCopier.setEnabled(this.peutSuivant());
-		this.btnExporter.setEnabled(this.peutSuivant());
-	}
+		JButton btn = new JButton(txt);
 
-	/** Permet de passer au panel suivant. */
-	public boolean peutSuivant()
-	{
-		return !this.frame.getTextDat().equals("Importer un fichier correspondant a la structure demander.");
+		btn.setBorder(BorderFactory.createLineBorder(FrameMain.COULEUR.darker(), 2));
+		btn.setBackground(CFond);
+		btn.setFocusable(false);
+		btn.setForeground(CTexte);
+
+		Dimension dim = new Dimension(100, 50);
+		btn.setSize(dim);
+		btn.setPreferredSize(dim);
+
+		return btn;
 	}
 
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource() == this.btnImporter)
 		{
-			File file = this.frame.getFile("Choisissez un fichier");
-
-			if (file != null)
+			String cheminFichier1 = this.selectionnerFichier("Choisissez un fichier txt");
+			if (cheminFichier1 == null) return;
+			if (cheminFichier1 != null)
 			{
-				//this.frame.lireDat(file);
+				try (BufferedReader br = new BufferedReader(new FileReader(cheminFichier1)))
+				{
+					this.txtVrp.read(br, null);
+					this.txtVrp.setCaretPosition(0); // revenir en haut du texte
+				} catch (IOException ex)
+				{
+					JOptionPane.showMessageDialog(this, "Erreur lors de la lecture du fichier", "Erreur", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		}
 
-		if (e.getSource() == this.btnCopier)
+		if (e.getSource() == this.btnConvertir)
 		{
-			StringSelection stringSelection = new StringSelection(this.txtDat.getText());
-			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-			clipboard.setContents(stringSelection, null);
+			this.txtVrp.getText();
+			System.out.println("qqqqqqqqqqqqqqqqq");
 		}
 /* 
-		if (e.getSource() == this.btnExporter)
+		if (e.getSource() == this.btnRecuit)
 		{
 			this.frame.telechargerContenue(this.frame.getTextDat(), ".dat");
 		}
 */
+	}
+/* 
+	private String selectionnerFichier(String titre)
+	{
+		FileDialog dialogueFichier = new FileDialog((JFrame) null, titre, FileDialog.LOAD);
+		dialogueFichier.setFile("*.txt"); // Filtre
+		dialogueFichier.setVisible(true);
+
+		String nomFichier = dialogueFichier.getFile();
+		String dossier = dialogueFichier.getDirectory();
+
+		if (nomFichier != null && dossier != null) { return new File(dossier, nomFichier).getAbsolutePath();}
+
+		return null;
+	}
+*/
+	private String selectionnerFichier(String titre)
+	{
+		FileDialog dialogueFichier = new FileDialog((JFrame) null, titre, FileDialog.LOAD);
+		dialogueFichier.setVisible(true);
+
+		String nomFichier = dialogueFichier.getFile();
+		String dossier = dialogueFichier.getDirectory();
+
+		if (nomFichier != null && dossier != null)
+		{
+			if (!nomFichier.toLowerCase().endsWith(".txt"))
+			{
+				JOptionPane.showMessageDialog(this, "Veuillez sélectionner un fichier .txt", "Fichier invalide",
+						JOptionPane.WARNING_MESSAGE);
+				return null;
+			}
+			return new File(dossier, nomFichier).getAbsolutePath();
+		}
+
+		return null;
 	}
 }
