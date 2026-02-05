@@ -5,24 +5,10 @@ import java.util.*;
 
 public class ConversionVrpDat {
 
-	public static void main(String[] args) {
-		String inputPath = "src/cantines.txt";
-		String outputPath = "CPLEX/cantines_test.dat";
-
-		try {
-			convertir(inputPath, outputPath);
-			System.out.println("Conversion terminée ! Le fichier " + outputPath +
-					" est prêt.");
-		} catch (IOException e) {
-			System.err.println("Erreur : " + e.getMessage());
-		}
-	}
-
-	public static void convertir(String txt, String outputPath) throws IOException {
-		final int NB_VEHICULE = 4;
+	public static void convertir(String txt, int nbVehicules, String outputPath) throws IOException {
 
 		LectureVrp lecteur = new LectureVrp();
-		LectureVrp.DonneesVrp donnees = lecteur.charger(txt);
+		LectureVrp.DonneesVrp donnees = lecteur.charger(txt, nbVehicules);
 		Noeud[] noeuds = donnees.getTableauNoeudsComplet();
 
 		PrintWriter writer = new PrintWriter(new FileWriter(outputPath));
@@ -34,7 +20,7 @@ public class ConversionVrpDat {
 
 		writer.println("nbClientDep = " + noeuds.length + ";");
 		writer.println("Qmax = " + donnees.qMax + ";");
-		writer.println("nbVehicules = " + NB_VEHICULE + ";");
+		writer.println("nbVehicules = " + donnees.nbVehicules + ";");
 		writer.println();
 
 		writer.print("Demande = [");

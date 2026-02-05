@@ -11,6 +11,7 @@ public class LectureVrp {
 
 	public static class DonneesVrp {
 		public int nbClients;
+		public int nbVehicules;
 		public double bestSolution;
 		public int qMax;
 		public Noeud depot;
@@ -26,8 +27,9 @@ public class LectureVrp {
 		}
 	}
 
-	public DonneesVrp charger(String cheminFichier) throws IOException {
+	public DonneesVrp charger(String cheminFichier, int nbVehicules) throws IOException {
 		DonneesVrp donnees = new DonneesVrp();
+		donnees.nbVehicules = nbVehicules;
 		Scanner sc = new Scanner(new File(cheminFichier));
 		sc.useLocale(Locale.US);
 

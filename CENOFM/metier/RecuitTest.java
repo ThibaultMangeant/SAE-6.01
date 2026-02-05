@@ -2,9 +2,11 @@ package CENOFM.metier;
 
 public class RecuitTest {
 	public static void main(String[] args) {
+		final int NB_VEHICULE = 4;
+
 		try {
 			LectureVrp lecteur = new LectureVrp();
-			LectureVrp.DonneesVrp donnees = lecteur.charger("src/cantines.txt");
+			LectureVrp.DonneesVrp donnees = lecteur.charger("src/cantines.txt", NB_VEHICULE);
 
 			RecuitSimuleCVRP rs = new RecuitSimuleCVRP(donnees.clients, donnees.depot, donnees.qMax);
 			rs.resoudre();
