@@ -25,6 +25,31 @@ public class LectureVrp {
 			}
 			return tab;
 		}
+
+		public int getNbClients() {
+			return nbClients;
+		}
+
+		public int getNbVehicules() {
+			return nbVehicules;
+		}
+
+		public double getBestSolution() {
+			return bestSolution;
+		}
+
+		public int getqMax() {
+			return qMax;
+		}
+
+		public Noeud getDepot() {
+			return depot;
+		}
+
+		public List<Noeud> getClients() {
+			return clients;
+		}
+
 	}
 
 	public DonneesVrp charger(String cheminFichier, int nbVehicules) throws IOException {
