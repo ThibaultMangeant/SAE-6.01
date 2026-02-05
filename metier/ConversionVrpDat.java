@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class VrpToDatConverter {
+public class ConversionVrpDat {
 
 	public static void main(String[] args) {
 
@@ -50,7 +50,7 @@ public class VrpToDatConverter {
 		PrintWriter writer = new PrintWriter(new FileWriter(outputPath));
 
 		writer.println("/*********************************************");
-		writer.println(" * OPL Data generated from Text Format");
+		writer.println(" * OPL .dat généré par format .txt");
 		writer.println(" *********************************************/");
 		writer.println();
 
@@ -84,5 +84,3 @@ public class VrpToDatConverter {
 		sc.close();
 	}
 }
-
-// Développement d'API de Translation de Textes Exploitables par CPLEX ou DATTEC pour les intimes
