@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class VrpToDatConverter {
+public class ConversionVrpDat {
 
 	public static void main(String[] args) {
 
@@ -84,5 +84,3 @@ public class VrpToDatConverter {
 		sc.close();
 	}
 }
-
-// Développement d'API de Translation de Textes Exploitables par CPLEX ou DATTEC pour les intimes
