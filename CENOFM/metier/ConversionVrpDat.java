@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 
 public class ConversionVrpDat {
-
+/* 
 	public static void main(String[] args) {
 		String inputPath = "../../src/tai75a.txt";
 		String outputPath = "../../CPLEX/tai75a_test.dat";
@@ -16,15 +16,15 @@ public class ConversionVrpDat {
 			System.err.println("Erreur : " + e.getMessage());
 		}
 	}
-
-	private static void convertir(String inputPath, String outputPath) throws IOException {
+*/
+	public void convertir(String txt, String outputPath) throws IOException {
 		final int NB_VEHICULE = 4;
 
-		Scanner sc = new Scanner(new File(inputPath));
+		Scanner sc = new Scanner(txt);
 		sc.useLocale(Locale.US);
 
 		int nbClients = sc.nextInt();
-		double bestSolution = sc.nextDouble();
+		double bestSolution = sc.nextDouble();   // bestSolution il est jamais utiliser ?
 		int qMax = sc.nextInt();
 
 		double depotX = sc.nextDouble();

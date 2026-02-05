@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.awt.Dimension;
 import java.awt.FileDialog;
@@ -123,8 +124,8 @@ public class PanelImport extends JPanel implements ActionListener
 
 		if (e.getSource() == this.btnConvertir)
 		{
-			this.txtVrp.getText();
-			System.out.println("qqqqqqqqqqqqqqqqq");
+			String cheminSortie = enregistrerNouvFichier("Enregistrer le fichier DAT", ".dat");
+			if (cheminSortie != null) { this.frame.convertir(this.txtVrp.getText(), cheminSortie); }
 		}
 /* 
 		if (e.getSource() == this.btnRecuit)
@@ -159,6 +160,42 @@ public class PanelImport extends JPanel implements ActionListener
 			return new File(dossier, nomFichier).getAbsolutePath();
 		}
 
+		return null;
+	}
+
+	private String enregistrerNouvFichier(String titre, String extension)
+	{
+		FileDialog dialogueFichier = new FileDialog((JFrame) null, titre, FileDialog.SAVE);
+
+		// Ouvrir dans le dernier dossier utilisé
+		if (dernierDossier != null) { dialogueFichier.setDirectory(dernierDossier); }
+
+		// Suggestion d’extension (visuelle)
+		dialogueFichier.setFile("*" + extension);
+		dialogueFichier.setVisible(true);
+
+		String nomFichier = dialogueFichier.getFile();
+		String dossier = dialogueFichier.getDirectory();
+
+		if (nomFichier != null && dossier != null)
+		{
+			// Ajouter l’extension si oubliée
+			if (!nomFichier.toLowerCase().endsWith(extension)) { nomFichier += extension; }
+			File fichier = new File(dossier, nomFichier);
+
+			// Confirmation si le fichier existe
+			if (fichier.exists())
+			{
+				int choix = JOptionPane.showConfirmDialog(this, "Le fichier existe déjà. Voulez-vous l’écraser ?",
+						"Confirmation", JOptionPane.YES_NO_OPTION);
+
+				if (choix != JOptionPane.YES_OPTION) { return null; }
+			}
+			// Mémoriser le dossier
+			dernierDossier = dossier;
+			// RETOUR DU CHEMIN COMPLET
+			return fichier.getAbsolutePath();
+		}
 		return null;
 	}
 

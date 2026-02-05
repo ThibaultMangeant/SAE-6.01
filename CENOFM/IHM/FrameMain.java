@@ -1,18 +1,22 @@
 package CENOFM.IHM;
 
 import java.awt.BorderLayout;
+import java.io.IOException;
+
 import javax.swing.JFrame;
 
-//import api.metier.VrpToDatConverter;
+import CENOFM.Controleur;
 
 public class FrameMain extends JFrame 
 {
+	private Controleur ct;
 	//private VrpToDatConverter vrpDatConv;
 
 	private PanelImport panels;
 
-	public FrameMain()
+	public FrameMain(Controleur contr)
 	{
+		this.ct = contr;
 		//this.vrpDatConv = new VrpToDatConverter();
 
 		this.panels = new PanelImport(this);
@@ -41,5 +45,7 @@ public class FrameMain extends JFrame
 		return null;
 	}
 
-	public static void main(String[] args) { new FrameMain(); }
+	public void convertir(String txt, String outputPath) { this.ct.convertir(txt, outputPath); }
+
+	public static void main(String[] args) { new FrameMain(null); }
 }
