@@ -8,7 +8,7 @@ public class ConversionVrpDat {
 	public static void convertir(String txt, int nbVehicules, String outputPath) throws IOException {
 
 		LectureVrp lecteur = new LectureVrp();
-		LectureVrp.DonneesVrp donnees = lecteur.charger(txt, nbVehicules);
+		DonneesVrp donnees = lecteur.charger(txt, nbVehicules);
 		Noeud[] noeuds = donnees.getTableauNoeudsComplet();
 
 		PrintWriter writer = new PrintWriter(new FileWriter(outputPath));

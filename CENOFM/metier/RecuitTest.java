@@ -6,7 +6,7 @@ public class RecuitTest {
 
 		try {
 			LectureVrp lecteur = new LectureVrp();
-			LectureVrp.DonneesVrp donnees = lecteur.charger("src/cantines.txt", NB_VEHICULE);
+			DonneesVrp donnees = lecteur.charger("src/cantines.txt", NB_VEHICULE);
 
 			RecuitSimuleCVRP rs = new RecuitSimuleCVRP(donnees.clients, donnees.depot, donnees.qMax);
 			rs.resoudre();
