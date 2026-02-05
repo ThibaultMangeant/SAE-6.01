@@ -17,30 +17,23 @@ public class Controleur {
 	{
 		this.ihm = new FrameMain(this);
 		this.lect = new LectureTxt();
+		this.conv = new ConversionVrpDat();
+		// this.recui = new RecuitSimuleCVRP();
 	}
 
-	public static void main(String[] args) throws Exception
-	{
-		new Controleur();
-	}
+	public static void main(String[] args) throws Exception { new Controleur(); }
 
 	public void extractionDonnee( String txt, int nbV )
 	{
-		System.out.println("yyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
-		/* 
-		try
-		{
-			this.lect.lectureTxt(txt, nbV);
-
-			this.conv = new ConversionVrpDat();
-			//this.recui = new RecuitSimuleCVRP();
-		} catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }*/
+		try { this.lect.lectureTxt(txt, nbV); } 
+		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); } 
 	}
 
 	public void convertir(String txt, String outputPath)
 	{
-		try {
-			this.conv.convertir(txt, outputPath);
-		} catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }
+		try { this.conv.convertir(txt, outputPath); } 
+		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }
 	}
+
+	public void resoudre(  ) { /* this.conv.resoudre(); */ System.out.println("nnnnnnnnnnnnnnnnnn"); }
 }

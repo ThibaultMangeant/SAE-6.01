@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.awt.Dimension;
 import java.awt.FileDialog;
@@ -131,12 +130,9 @@ public class PanelImport extends JPanel implements ActionListener
 			String cheminSortie = enregistrerNouvFichier("Enregistrer le fichier DAT", ".dat");
 			if (cheminSortie != null) { this.frame.convertir(this.txtVrp.getText(), cheminSortie); }
 		}
-/* 
-		if (e.getSource() == this.btnRecuit)
-		{
-			this.frame.telechargerContenue(this.frame.getTextDat(), ".dat");
-		}
-*/
+ 
+		if (e.getSource() == this.btnRecuit) { this.frame.resoudre(  ); }
+
 	}
 	
 	private int NombreVehi()
