@@ -30,7 +30,7 @@ public class Controleur {
 	{
 		try { 
 			System.out.println("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-			donnee = this.lect.charger(txt, nbV); 
+			this.donnee = this.lect.charger(txt, nbV); 
 			//System.out.println(donnee);
 			System.out.println("ssssssssssssssssssssssss");
 		} 
@@ -39,10 +39,10 @@ public class Controleur {
 
 	public void convertir(String outputPath)
 	{
-		System.out.println(donnee);
-		/* 
+		//System.out.println(donnee);
+		
 		try { this.conv.convertir(donnee, outputPath); } 
-		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }*/
+		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }
 	}
 
 	public void resoudre(  ) { 
