@@ -32,11 +32,9 @@ public class Controleur {
 		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }  
 	}
 
-	public void convertir(String outputPath, int nbVehicules)
+	public void convertir(String outputPath)
 	{
-		System.out.println(donnee);
-		
-		try { ConversionVrpDat.convertir(donnee, nbVehicules, outputPath); } 
+		try { ConversionVrpDat.convertir(donnee, outputPath); } 
 		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }
 	}
 

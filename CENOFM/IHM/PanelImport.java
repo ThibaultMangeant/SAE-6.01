@@ -134,7 +134,7 @@ public class PanelImport extends JPanel implements ActionListener {
 		if (e.getSource() == this.btnConvertir) {
 			String cheminSortie = enregistrerNouvFichier("Enregistrer le fichier DAT", ".dat");
 			if (cheminSortie != null) {
-				this.frame.convertir(cheminSortie, this.nbVehicules);
+				this.frame.convertir(cheminSortie);
 			}
 		}
  
