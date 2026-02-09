@@ -22,8 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 
-public class PanelImport extends JPanel implements ActionListener
-{
+public class PanelImport extends JPanel implements ActionListener {
 	private FrameMain frame;
 	private JPanel panelBtn;
 	private JPanel panelCentre;
@@ -42,9 +41,9 @@ public class PanelImport extends JPanel implements ActionListener
 	private Font ft;
 
 	private String dernierDossier = null;
+	private int nbVehicules;
 
-	public PanelImport(FrameMain fm)
-	{
+	public PanelImport(FrameMain fm) {
 		this.frame = fm;
 		this.setLayout(new BorderLayout());
 		this.setLocation(10, 10);
@@ -66,7 +65,6 @@ public class PanelImport extends JPanel implements ActionListener
 		this.txtResoudre.setWrapStyleWord(true);
 		this.txtResoudre.setBorder(border);
 		this.txtResoudre.setEditable(false);
-
 
 		this.panelBtn = new JPanel(new GridLayout(1, 3, 0, 3));
 		this.ft = new Font("Montserrat", Font.BOLD, 18);
@@ -92,8 +90,7 @@ public class PanelImport extends JPanel implements ActionListener
 		this.btnRecuit.addActionListener(this);
 	}
 
-	public static JButton styliserBouton(String txt)
-	{
+	public static JButton styliserBouton(String txt) {
 		JButton btn = new JButton(txt);
 
 		btn.setBorder(BorderFactory.createLineBorder(CFond.darker(), 2));
@@ -108,37 +105,35 @@ public class PanelImport extends JPanel implements ActionListener
 		return btn;
 	}
 
-	public void actionPerformed(ActionEvent e)
-	{
-		if (e.getSource() == this.btnImporter)
-		{
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == this.btnImporter) {
 			String cheminFichier1 = this.selectionnerFichier("Choisissez un fichier txt");
-			if (cheminFichier1 == null) return;
-			if (cheminFichier1 != null)
-			{
-				try (BufferedReader br = new BufferedReader(new FileReader(cheminFichier1)))
-				{
+			if (cheminFichier1 == null)
+				return;
+			if (cheminFichier1 != null) {
+				try (BufferedReader br = new BufferedReader(new FileReader(cheminFichier1))) {
 					this.txtVrp.read(br, null);
 					this.txtVrp.setCaretPosition(0); // revenir en haut du texte
 					int nbV = NombreVehi();
 					this.frame.extractionDonnee(this.txtVrp.getText(), nbV);
 
-				} catch (IOException ex)
-				{
-					JOptionPane.showMessageDialog(this, "Erreur lors de la lecture du fichier", "Erreur", JOptionPane.ERROR_MESSAGE);
+				} catch (IOException ex) {
+					JOptionPane.showMessageDialog(this, "Erreur lors de la lecture du fichier", "Erreur",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
 
-		if (e.getSource() == this.btnConvertir)
-		{
+		if (e.getSource() == this.btnConvertir) {
 			String cheminSortie = enregistrerNouvFichier("Enregistrer le fichier DAT", ".dat");
-			if (cheminSortie != null) { this.frame.convertir( cheminSortie); }
+			if (cheminSortie != null) {
+				this.frame.convertir(cheminSortie, this.nbVehicules);
+			}
 		}
- 
-		if (e.getSource() == this.btnRecuit) { 
-			//this.txtResoudre =new JTextArea( "" + this.frame.resoudre());  
-			this.txtResoudre = new JTextArea("Ja passe !" );
+
+		if (e.getSource() == this.btnRecuit) {
+			// this.txtResoudre =new JTextArea( "" + this.frame.resoudre());
+			this.txtResoudre = new JTextArea("Ja passe !");
 			this.spResoudre.setViewportView(this.txtResoudre);
 			this.panelCentre.add(this.spResoudre);
 			this.add(this.panelCentre, BorderLayout.CENTER);
@@ -146,25 +141,24 @@ public class PanelImport extends JPanel implements ActionListener
 		}
 
 	}
-	
-	private int NombreVehi()
-	{
+
+	private int NombreVehi() {
 		JTextArea champ = new JTextArea();
 		champ.setFont(new Font("Montserrat", Font.PLAIN, 14));
 
 		Object[] options = { "Valider" }; // ✅ seul bouton disponible
 
-		while (true)
-		{
-			int result = JOptionPane.showOptionDialog(this, champ, "Entrez le nombre de véhicules (entier positif)",
+		while (true) {
+			JOptionPane.showOptionDialog(this, champ, "Entrez le nombre de véhicules (entier positif)",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0] // bouton
 			);
 
-			try
-			{
-				int valeur = Integer.parseInt(champ.getText().trim());
-				if (valeur > 0) { return valeur; /* nombre valide */ }
-			} catch (NumberFormatException ignored) {  }
+			try {
+				this.nbVehicules = Integer.parseInt(champ.getText().trim());
+				if (this.nbVehicules > 0) {
+					return this.nbVehicules; }
+			} catch (NumberFormatException ignored) {
+			}
 
 			// Valeur invalide → message et redemande
 			JOptionPane.showMessageDialog(this, "Veuillez entrer un nombre entier strictement positif.",
@@ -172,24 +166,24 @@ public class PanelImport extends JPanel implements ActionListener
 		}
 	}
 
-	private String selectionnerFichier(String titre)
-	{
+	private String selectionnerFichier(String titre) {
 		FileDialog dialogueFichier = new FileDialog((JFrame) null, titre, FileDialog.LOAD);
 
 		// Réouvrir dans le dernier dossier utilisé
-		if (dernierDossier != null) { dialogueFichier.setDirectory(dernierDossier); }
+		if (dernierDossier != null) {
+			dialogueFichier.setDirectory(dernierDossier);
+		}
 		dialogueFichier.setFile("*.txt");
 		dialogueFichier.setVisible(true);
 
 		String nomFichier = dialogueFichier.getFile();
 		String dossier = dialogueFichier.getDirectory();
 
-		if (nomFichier != null && dossier != null)
-		{
+		if (nomFichier != null && dossier != null) {
 			// Autoriser uniquement les .txt
-			if (!nomFichier.toLowerCase().endsWith(".txt"))
-			{
-				JOptionPane.showMessageDialog(this, "Veuillez sélectionner un fichier .txt", "Fichier invalide", JOptionPane.WARNING_MESSAGE);
+			if (!nomFichier.toLowerCase().endsWith(".txt")) {
+				JOptionPane.showMessageDialog(this, "Veuillez sélectionner un fichier .txt", "Fichier invalide",
+						JOptionPane.WARNING_MESSAGE);
 				return null;
 			}
 			// Mémorisation du dossier
@@ -200,12 +194,13 @@ public class PanelImport extends JPanel implements ActionListener
 		return null;
 	}
 
-	private String enregistrerNouvFichier(String titre, String extension)
-	{
+	private String enregistrerNouvFichier(String titre, String extension) {
 		FileDialog dialogueFichier = new FileDialog((JFrame) null, titre, FileDialog.SAVE);
 
 		// Ouvrir dans le dernier dossier utilisé
-		if (dernierDossier != null) { dialogueFichier.setDirectory(dernierDossier); }
+		if (dernierDossier != null) {
+			dialogueFichier.setDirectory(dernierDossier);
+		}
 
 		// Suggestion d’extension (visuelle)
 		dialogueFichier.setFile("*" + extension);
@@ -214,19 +209,21 @@ public class PanelImport extends JPanel implements ActionListener
 		String nomFichier = dialogueFichier.getFile();
 		String dossier = dialogueFichier.getDirectory();
 
-		if (nomFichier != null && dossier != null)
-		{
+		if (nomFichier != null && dossier != null) {
 			// Ajouter l’extension si oubliée
-			if (!nomFichier.toLowerCase().endsWith(extension)) { nomFichier += extension; }
+			if (!nomFichier.toLowerCase().endsWith(extension)) {
+				nomFichier += extension;
+			}
 			File fichier = new File(dossier, nomFichier);
 
 			// Confirmation si le fichier existe
-			if (fichier.exists())
-			{
+			if (fichier.exists()) {
 				int choix = JOptionPane.showConfirmDialog(this, "Le fichier existe déjà. Voulez-vous l’écraser ?",
 						"Confirmation", JOptionPane.YES_NO_OPTION);
 
-				if (choix != JOptionPane.YES_OPTION) { return null; }
+				if (choix != JOptionPane.YES_OPTION) {
+					return null;
+				}
 			}
 			// Mémoriser le dossier
 			dernierDossier = dossier;

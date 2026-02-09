@@ -28,7 +28,7 @@ public class FrameMain extends JFrame
 	}
 	
 	public void extractionDonnee( String txt, int nbV ) { this.ct.extractionDonnee( txt, nbV );}
-	public void convertir( String outputPath) { this.ct.convertir( outputPath); }
+	public void convertir( String outputPath, int nbV ) { this.ct.convertir( outputPath, nbV); }
 	public void resoudre(  ) { this.ct.resoudre(  ); }
 
 	public static void main(String[] args) { new FrameMain(null); }
