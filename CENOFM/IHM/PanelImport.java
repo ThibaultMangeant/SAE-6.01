@@ -15,11 +15,11 @@ import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 public class PanelImport extends JPanel implements ActionListener
@@ -82,6 +82,7 @@ public class PanelImport extends JPanel implements ActionListener
 		this.sp = new JScrollPane();
 		this.sp.setViewportView(this.txtVrp);
 		this.spResoudre = new JScrollPane();
+		this.txtResoudre = new JTextArea("Ja passe !");
 		this.spResoudre.setViewportView(this.txtResoudre);
 
 		this.panelCentre.add(this.sp);
@@ -122,7 +123,13 @@ public class PanelImport extends JPanel implements ActionListener
 					this.txtVrp.setCaretPosition(0); // revenir en haut du texte
 					int nbV = NombreVehi();
 					this.frame.extractionDonnee(this.txtVrp.getText(), nbV);
-
+					if (this.panelCentre.isAncestorOf(this.spResoudre))
+					{
+						this.panelCentre.remove(this.spResoudre);
+						this.txtResoudre.setText("");
+						this.panelCentre.revalidate();
+						this.panelCentre.repaint();
+					}
 				} catch (IOException ex)
 				{
 					JOptionPane.showMessageDialog(this, "Erreur lors de la lecture du fichier", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -138,37 +145,50 @@ public class PanelImport extends JPanel implements ActionListener
  
 		if (e.getSource() == this.btnRecuit) { 
 			//this.txtResoudre =new JTextArea( "" + this.frame.resoudre());  
-			this.txtResoudre = new JTextArea("Ja passe !" );
-			this.spResoudre.setViewportView(this.txtResoudre);
+
+			this.txtResoudre.setCaretPosition(0);
 			this.panelCentre.add(this.spResoudre);
-			this.add(this.panelCentre, BorderLayout.CENTER);
-			System.out.println("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+			this.panelCentre.revalidate();
+			this.panelCentre.repaint();
 		}
 
 	}
-	
+
 	private int NombreVehi()
 	{
-		JTextArea champ = new JTextArea();
+		JTextField champ = new JTextField(10);
 		champ.setFont(new Font("Montserrat", Font.PLAIN, 14));
 
-		Object[] options = { "Valider" }; // ✅ seul bouton disponible
+		Object[] contenu = { "Entrez le nombre de véhicules (entier positif) :", champ };
 
 		while (true)
 		{
-			int result = JOptionPane.showOptionDialog(this, champ, "Entrez le nombre de véhicules (entier positif)",
-					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0] // bouton
+			int result = JOptionPane.showConfirmDialog(
+					this,
+					contenu,
+					"Nombre de véhicules",
+					JOptionPane.OK_CANCEL_OPTION,
+					JOptionPane.QUESTION_MESSAGE
 			);
+
+			if (result != JOptionPane.OK_OPTION) { return -1;  }
 
 			try
 			{
 				int valeur = Integer.parseInt(champ.getText().trim());
-				if (valeur > 0) { return valeur; /* nombre valide */ }
-			} catch (NumberFormatException ignored) {  }
+				if (valeur > 0) { return valeur; }
+			}
+			catch (NumberFormatException ignored) {}
 
-			// Valeur invalide → message et redemande
-			JOptionPane.showMessageDialog(this, "Veuillez entrer un nombre entier strictement positif.",
-					"Valeur invalide", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(
+					this,
+					"Veuillez entrer un nombre entier strictement positif.",
+					"Valeur invalide",
+					JOptionPane.ERROR_MESSAGE
+			);
+
+			champ.setText("");
+			champ.requestFocusInWindow();
 		}
 	}
 
@@ -196,7 +216,6 @@ public class PanelImport extends JPanel implements ActionListener
 			dernierDossier = dossier;
 			return new File(dossier, nomFichier).getAbsolutePath();
 		}
-
 		return null;
 	}
 
@@ -223,8 +242,7 @@ public class PanelImport extends JPanel implements ActionListener
 			// Confirmation si le fichier existe
 			if (fichier.exists())
 			{
-				int choix = JOptionPane.showConfirmDialog(this, "Le fichier existe déjà. Voulez-vous l’écraser ?",
-						"Confirmation", JOptionPane.YES_NO_OPTION);
+				int choix = JOptionPane.showConfirmDialog(this, "Le fichier existe déjà. Voulez-vous l’écraser ?", "Confirmation", JOptionPane.YES_NO_OPTION);
 
 				if (choix != JOptionPane.YES_OPTION) { return null; }
 			}

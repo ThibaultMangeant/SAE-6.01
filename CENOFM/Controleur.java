@@ -38,5 +38,5 @@ public class Controleur {
 		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }
 	}
 
-	public void resoudre(  ) { /*donnee.resoudre();  System.out.println(donnee.resoudre().toString()); */ }
+	public void resoudre(  ) { /*donnee.resoudre(); */ }
 }
