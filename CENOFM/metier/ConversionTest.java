@@ -6,8 +6,8 @@ public class ConversionTest {
 		final int NB_VEHICULE = 4;
 
 		String inputPath = "src/cantines.txt";
-		String outputPath = "test/cantines.txt";
-
+		String outputPath = "CPLEX/cantines_test.dat";
+/* 
 		try {
 			DonneesVrp donnees = new LectureVrp().charger(inputPath, NB_VEHICULE);
 			ConversionVrpDat.convertir(donnees, outputPath);
@@ -15,6 +15,6 @@ public class ConversionTest {
 					" est prêt.");
 		} catch (IOException e) {
 			System.err.println("Erreur lors du test de la conversion : " + e.getMessage());
-		}
+		}*/
 	}
 }

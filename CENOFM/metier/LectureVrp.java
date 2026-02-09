@@ -6,9 +6,10 @@ import java.util.Scanner;
 public class LectureVrp {
 
 	public DonneesVrp charger(String cheminFichier, int nbVehicules) throws IOException {
-		DonneesVrp donnees = new DonneesVrp();
+		
+		DonneesVrp donnees = new DonneesVrp(); 
 		donnees.nbVehicules = nbVehicules;
-		Scanner sc = new Scanner(new File(cheminFichier));
+		Scanner sc = new Scanner(cheminFichier);
 		sc.useLocale(Locale.US);
 
 		if (!sc.hasNext())

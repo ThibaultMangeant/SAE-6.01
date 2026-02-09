@@ -28,12 +28,7 @@ public class Controleur {
 
 	public void extractionDonnee( String txt, int nbV )
 	{
-		try { 
-			System.out.println("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-			donnee = this.lect.charger(txt, nbV); 
-			//System.out.println(donnee);
-			System.out.println("ssssssssssssssssssssssss");
-		} 
+		try { this.donnee = this.lect.charger(txt, nbV);  } 
 		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }  
 	}
 
@@ -45,6 +40,5 @@ public class Controleur {
 		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }
 	}
 
-	public void resoudre(  ) { 
-		/* donnee.resoudre(); */ System.out.println("nnnnnnnnnnnnnnnnnn"); }
+	public void resoudre(  ) { /*donnee.resoudre(); */ }
 }
