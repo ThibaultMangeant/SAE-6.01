@@ -1,4 +1,3 @@
-package CENOFM.metier;
 
 import java.io.IOException;
 
@@ -10,7 +9,8 @@ public class ConversionTest {
 		String outputPath = "CPLEX/cantines_test.dat";
 /* 
 		try {
-			ConversionVrpDat.convertir(inputPath, NB_VEHICULE, outputPath);
+			DonneesVrp donnees = new LectureVrp().charger(inputPath, NB_VEHICULE);
+			ConversionVrpDat.convertir(donnees, outputPath);
 			System.out.println("Conversion terminée ! Le fichier " + outputPath +
 					" est prêt.");
 		} catch (IOException e) {

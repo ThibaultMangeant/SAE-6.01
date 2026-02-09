@@ -19,7 +19,7 @@ public class Controleur {
 	{
 		this.ihm = new FrameMain(this);
 		this.lect = new LectureVrp();
-		this.conv = new ConversionVrpDat();
+		// this.conv = new ConversionVrpDat();
 		// this.recui = new RecuitSimuleCVRP();
 		this.donnee = new DonneesVrp();
 	}
@@ -32,9 +32,11 @@ public class Controleur {
 		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }  
 	}
 
-	public void convertir(String outputPath)
+	public void convertir(String outputPath, int nbVehicules)
 	{
-		try { this.conv.convertir(donnee, outputPath); } 
+		System.out.println(donnee);
+		
+		try { ConversionVrpDat.convertir(donnee, nbVehicules, outputPath); } 
 		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }
 	}
 
