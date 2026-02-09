@@ -59,8 +59,6 @@ public class RecuitSimuleCVRP {
 		calculerDistanceTotale(actuelle);
 		Solution meilleure = actuelle.copie();
 
-		//System.out.println("Distance initiale : " + actuelle.distanceTotale);
-
 		while (temperature > temperatureMin) {
 			for (int i = 0; i < iterationsParPalier; i++) {
 				Solution voisin = genererVoisin(actuelle);
@@ -79,8 +77,9 @@ public class RecuitSimuleCVRP {
 		long tempsFin = System.currentTimeMillis();
 		double tempsTotal = (tempsFin - tempsDebut) / 1000.0; // Conversion en secondes
 
-		System.out.println(afficherResultats(meilleure, 0));
 		System.out.println("Temps de résolution : " + tempsTotal + " secondes");
+		return (afficherResultats(meilleure, 0));
+
 	}
 
 	private Solution genererVoisin(Solution actuelle) {
