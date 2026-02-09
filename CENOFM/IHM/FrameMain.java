@@ -1,7 +1,6 @@
 package CENOFM.IHM;
 
 import java.awt.BorderLayout;
-
 import javax.swing.JFrame;
 
 import CENOFM.Controleur;
