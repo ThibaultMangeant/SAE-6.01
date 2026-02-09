@@ -34,8 +34,8 @@ public class Controleur {
 		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }
 	}
 
-	public String resoudre(  ) { 
+	public String resoudre( double temperature, double temperatureMin, double alpha ) { 
 		RecuitSimuleCVRP rs = new RecuitSimuleCVRP(this.donnee.clients, this.donnee.depot, this.donnee.qMax);
-		return rs.resoudre();
+		return rs.resoudre( temperature, temperatureMin, alpha );
 	}
 }

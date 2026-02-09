@@ -46,11 +46,11 @@ public class RecuitSimuleCVRP {
 		this.qMax = qMax;
 	}
 
-	public String resoudre() {
-
+	public String resoudre( double temperature, double temperatureMin, double alpha ) {
+/* 
 		double temperature = 1000.0;
 		double temperatureMin = 0.1;
-		double alpha = 0.999;
+		double alpha = 0.999;*/
 		int iterationsParPalier = 100;
 
 		long tempsDebut = System.currentTimeMillis();

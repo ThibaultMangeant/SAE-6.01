@@ -41,6 +41,10 @@ public class PanelImport extends JPanel implements ActionListener {
 	private Font ft;
 
 	private String dernierDossier = null;
+	private int nbVehicules;
+	private double tempInit;
+	private double seuilArret;
+	private double alpha;
 
 	public PanelImport(FrameMain fm) {
 		this.frame = fm;
@@ -86,6 +90,8 @@ public class PanelImport extends JPanel implements ActionListener {
 		this.add(this.panelCentre, BorderLayout.CENTER);
 
 		this.btnImporter.addActionListener(this);
+		this.btnRecuit.setEnabled(false);
+		this.btnConvertir.setEnabled(false);
 	}
 
 	public static JButton styliserBouton(String txt) {
@@ -112,8 +118,7 @@ public class PanelImport extends JPanel implements ActionListener {
 				try (BufferedReader br = new BufferedReader(new FileReader(cheminFichier1))) {
 					this.txtVrp.read(br, null);
 					this.txtVrp.setCaretPosition(0); // revenir en haut du texte
-					int nbV = NombreVehi();
-					this.frame.extractionDonnee(this.txtVrp.getText(), nbV);
+					this.frame.extractionDonnee(this.txtVrp.getText(), NombreVehi());
 					if (this.panelCentre.isAncestorOf(this.spResoudre))
 					{
 						this.panelCentre.remove(this.spResoudre);
@@ -123,6 +128,8 @@ public class PanelImport extends JPanel implements ActionListener {
 					}
 					this.btnConvertir.addActionListener(this);
 					this.btnRecuit.addActionListener(this);
+					this.btnRecuit.setEnabled(true);
+					this.btnConvertir.setEnabled(true);
 				} catch (IOException ex)
 				{
 					JOptionPane.showMessageDialog(this, "Erreur lors de la lecture du fichier", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -134,16 +141,21 @@ public class PanelImport extends JPanel implements ActionListener {
 			String cheminSortie = enregistrerNouvFichier("Enregistrer le fichier DAT", ".dat");
 			if (cheminSortie != null) { this.frame.convertir(cheminSortie); }
 		}
- 
-		if (e.getSource() == this.btnRecuit) { 
-			this.txtResoudre =new JTextArea( "" + this.frame.resoudre());  
-			this.spResoudre.setViewportView(this.txtResoudre);
 
+		if (e.getSource() == this.btnRecuit)
+		{
+			// Si annuler → STOP
+			if (!paramRecuit()) { return; }
+
+			this.txtResoudre.setText("" + this.frame.resoudre( this.tempInit, this.seuilArret, this.alpha ));
 			this.txtResoudre.setCaretPosition(0);
-			this.panelCentre.add(this.spResoudre);
+
+			if (!this.panelCentre.isAncestorOf(this.spResoudre)) { this.panelCentre.add(this.spResoudre); }
+
 			this.panelCentre.revalidate();
 			this.panelCentre.repaint();
 		}
+
 	}
 
 	private int NombreVehi()
@@ -167,10 +179,9 @@ public class PanelImport extends JPanel implements ActionListener {
 
 			try
 			{
-				int valeur = Integer.parseInt(champ.getText().trim());
-				if (valeur > 0) { return valeur; }
-			}
-			catch (NumberFormatException ignored) {}
+				this.nbVehicules = Integer.parseInt(champ.getText().trim());
+				if (this.nbVehicules > 0) { return this.nbVehicules; }
+			} catch (NumberFormatException ignored) { }
 
 			JOptionPane.showMessageDialog(
 					this,
@@ -238,4 +249,95 @@ public class PanelImport extends JPanel implements ActionListener {
 		}
 		return null;
 	}
+
+	private boolean paramRecuit()
+	{
+		JTextField ch1 = new JTextField(10);
+		JTextField ch2 = new JTextField(10);
+		JTextField ch3 = new JTextField(10);
+
+		Font f = new Font("Montserrat", Font.PLAIN, 14);
+		ch1.setFont(f);
+		ch2.setFont(f);
+		ch3.setFont(f);
+
+		Object[] contenu = { 	"Température initiale (> 0) :", ch1, 
+								"Seuil d'arrêt (> 0) :", ch2,
+								"Alpha (entre 0.1 et 0.9) :", ch3 };
+
+		while (true)
+		{
+			int result = JOptionPane.showConfirmDialog(this, contenu, "Paramètres du recuit simulé",
+					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+			// Annuler → on stoppe
+			if (result != JOptionPane.OK_OPTION) { return false; }
+
+			boolean erreur = false;
+			StringBuilder message = new StringBuilder("Veuillez corriger les champs suivants :\n");
+
+			Double tInit 	= null;
+			Double seuil 	= null;
+			Double a 		= null;
+
+			// --- Validation ch1 ---
+			try
+			{
+				tInit = Double.parseDouble(ch1.getText().trim());
+				if (tInit <= 0) { throw new IllegalArgumentException(); }
+			} catch (Exception e)
+			{
+				erreur = true;
+				message.append("• Température initiale (> 0)\n");
+				ch1.setText("");
+			}
+
+			// --- Validation ch2 ---
+			try
+			{
+				seuil = Double.parseDouble(ch2.getText().trim());
+				if (seuil <= 0) { throw new IllegalArgumentException(); }
+			} catch (Exception e)
+			{
+				erreur = true;
+				message.append("• Seuil d'arrêt (> 0)\n");
+				ch2.setText("");
+			}
+
+			// --- Validation ch3 ---
+			try
+			{
+				a = Double.parseDouble(ch3.getText().trim());
+				if (a < 0.1 || a > 0.9) { throw new IllegalArgumentException(); }
+			} catch (Exception e)
+			{
+				erreur = true;
+				message.append("• Alpha (entre 0.1 et 0.9)\n");
+				ch3.setText("");
+			}
+
+			// S'il y a au moins une erreur → message + boucle
+			if (erreur)
+			{
+				JOptionPane.showMessageDialog(this, message.toString(), "Valeurs invalides", JOptionPane.ERROR_MESSAGE);
+
+				// Focus intelligent : premier champ vide
+				if (ch1.getText().isEmpty()) { ch1.requestFocusInWindow(); }
+				else if (ch2.getText().isEmpty()) { ch2.requestFocusInWindow(); }
+				else { ch3.requestFocusInWindow(); }
+
+				continue;
+			}
+
+			// Tout est valide → on stocke
+			this.tempInit = tInit;
+			this.seuilArret = seuil;
+			this.alpha = a;
+
+			return true;
+		}
+	}
+
+
+
 }
