@@ -41,7 +41,6 @@ public class PanelImport extends JPanel implements ActionListener {
 	private Font ft;
 
 	private String dernierDossier = null;
-	private int nbVehicules;
 
 	public PanelImport(FrameMain fm) {
 		this.frame = fm;
@@ -133,20 +132,18 @@ public class PanelImport extends JPanel implements ActionListener {
 
 		if (e.getSource() == this.btnConvertir) {
 			String cheminSortie = enregistrerNouvFichier("Enregistrer le fichier DAT", ".dat");
-			if (cheminSortie != null) {
-				this.frame.convertir(cheminSortie);
-			}
+			if (cheminSortie != null) { this.frame.convertir(cheminSortie); }
 		}
  
 		if (e.getSource() == this.btnRecuit) { 
-			//this.txtResoudre =new JTextArea( "" + this.frame.resoudre());  
+			this.txtResoudre =new JTextArea( "" + this.frame.resoudre());  
+			this.spResoudre.setViewportView(this.txtResoudre);
 
 			this.txtResoudre.setCaretPosition(0);
 			this.panelCentre.add(this.spResoudre);
 			this.panelCentre.revalidate();
 			this.panelCentre.repaint();
 		}
-
 	}
 
 	private int NombreVehi()
@@ -181,7 +178,6 @@ public class PanelImport extends JPanel implements ActionListener {
 					"Valeur invalide",
 					JOptionPane.ERROR_MESSAGE
 			);
-
 			champ.setText("");
 			champ.requestFocusInWindow();
 		}
@@ -191,9 +187,7 @@ public class PanelImport extends JPanel implements ActionListener {
 		FileDialog dialogueFichier = new FileDialog((JFrame) null, titre, FileDialog.LOAD);
 
 		// Réouvrir dans le dernier dossier utilisé
-		if (dernierDossier != null) {
-			dialogueFichier.setDirectory(dernierDossier);
-		}
+		if (dernierDossier != null) { dialogueFichier.setDirectory(dernierDossier); }
 		dialogueFichier.setFile("*.txt");
 		dialogueFichier.setVisible(true);
 
@@ -203,8 +197,7 @@ public class PanelImport extends JPanel implements ActionListener {
 		if (nomFichier != null && dossier != null) {
 			// Autoriser uniquement les .txt
 			if (!nomFichier.toLowerCase().endsWith(".txt")) {
-				JOptionPane.showMessageDialog(this, "Veuillez sélectionner un fichier .txt", "Fichier invalide",
-						JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Veuillez sélectionner un fichier .txt", "Fichier invalide", JOptionPane.WARNING_MESSAGE);
 				return null;
 			}
 			// Mémorisation du dossier
@@ -218,9 +211,7 @@ public class PanelImport extends JPanel implements ActionListener {
 		FileDialog dialogueFichier = new FileDialog((JFrame) null, titre, FileDialog.SAVE);
 
 		// Ouvrir dans le dernier dossier utilisé
-		if (dernierDossier != null) {
-			dialogueFichier.setDirectory(dernierDossier);
-		}
+		if (dernierDossier != null) { dialogueFichier.setDirectory(dernierDossier); }
 
 		// Suggestion d’extension (visuelle)
 		dialogueFichier.setFile("*" + extension);
@@ -231,19 +222,14 @@ public class PanelImport extends JPanel implements ActionListener {
 
 		if (nomFichier != null && dossier != null) {
 			// Ajouter l’extension si oubliée
-			if (!nomFichier.toLowerCase().endsWith(extension)) {
-				nomFichier += extension;
-			}
+			if (!nomFichier.toLowerCase().endsWith(extension)) { nomFichier += extension; }
 			File fichier = new File(dossier, nomFichier);
 
 			// Confirmation si le fichier existe
 			if (fichier.exists())
 			{
 				int choix = JOptionPane.showConfirmDialog(this, "Le fichier existe déjà. Voulez-vous l’écraser ?", "Confirmation", JOptionPane.YES_NO_OPTION);
-
-				if (choix != JOptionPane.YES_OPTION) {
-					return null;
-				}
+				if (choix != JOptionPane.YES_OPTION) { return null; }
 			}
 			// Mémoriser le dossier
 			dernierDossier = dossier;
@@ -252,5 +238,4 @@ public class PanelImport extends JPanel implements ActionListener {
 		}
 		return null;
 	}
-
 }

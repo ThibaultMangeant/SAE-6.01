@@ -46,7 +46,7 @@ public class RecuitSimuleCVRP {
 		this.qMax = qMax;
 	}
 
-	public void resoudre() {
+	public String resoudre() {
 
 		double temperature = 1000.0;
 		double temperatureMin = 0.1;
@@ -57,7 +57,7 @@ public class RecuitSimuleCVRP {
 		calculerDistanceTotale(actuelle);
 		Solution meilleure = actuelle.copie();
 
-		System.out.println("Distance initiale : " + actuelle.distanceTotale);
+		//System.out.println("Distance initiale : " + actuelle.distanceTotale);
 
 		while (temperature > temperatureMin) {
 			for (int i = 0; i < iterationsParPalier; i++) {
@@ -71,13 +71,13 @@ public class RecuitSimuleCVRP {
 						meilleure = actuelle.copie();
 					}
 				}
-				System.out.println(actuelle);
+				//System.out.println(actuelle);
 			}
 			afficherResultats(actuelle);
 			temperature *= alpha;
 		}
 
-		afficherResultats(meilleure);
+		return afficherResultats(meilleure);
 	}
 
 	private Solution genererVoisin(Solution actuelle) {

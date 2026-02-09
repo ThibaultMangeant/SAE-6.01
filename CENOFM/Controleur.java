@@ -11,16 +11,12 @@ import CENOFM.metier.DonneesVrp;
 public class Controleur {
 	private FrameMain ihm;
 	private LectureVrp lect;
-	private ConversionVrpDat conv;
-	private RecuitSimuleCVRP recui;
 	private DonneesVrp donnee;
 
 	public Controleur() throws Exception
 	{
 		this.ihm = new FrameMain(this);
 		this.lect = new LectureVrp();
-		// this.conv = new ConversionVrpDat();
-		// this.recui = new RecuitSimuleCVRP();
 		this.donnee = new DonneesVrp();
 	}
 
@@ -29,7 +25,7 @@ public class Controleur {
 	public void extractionDonnee( String txt, int nbV )
 	{
 		try { this.donnee = this.lect.charger(txt, nbV);  } 
-		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }  
+		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); } 
 	}
 
 	public void convertir(String outputPath)
@@ -38,5 +34,8 @@ public class Controleur {
 		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }
 	}
 
-	public void resoudre(  ) { /*donnee.resoudre(); */ }
+	public String resoudre(  ) { 
+		RecuitSimuleCVRP rs = new RecuitSimuleCVRP(this.donnee.clients, this.donnee.depot, this.donnee.qMax);
+		return rs.resoudre();
+	}
 }
