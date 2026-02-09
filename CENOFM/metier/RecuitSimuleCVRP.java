@@ -1,5 +1,3 @@
-package CENOFM.metier;
-
 import java.util.*;
 
 class Solution {
@@ -19,6 +17,19 @@ class Solution {
 		nouvelle.distanceTotale = this.distanceTotale;
 		return nouvelle;
 	}
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Distance totale : ").append(String.format("%.2f", distanceTotale)).append("\n");
+		for (int i = 0; i < tournees.size(); i++) {
+			sb.append("Véhicule ").append(i + 1).append(" : Dépôt");
+			for (Noeud c : tournees.get(i)) {
+				sb.append(" -> ").append(c.id);
+			}
+			sb.append(" -> Dépôt\n");
+		}
+		return sb.toString();
+	}
 }
 
 public class RecuitSimuleCVRP {
@@ -35,10 +46,10 @@ public class RecuitSimuleCVRP {
 
 	public void resoudre() {
 
-		double temperature = 2000.0;
-		double temperatureMin = 0.01;
+		double temperature = 1000.0;
+		double temperatureMin = 0.1;
 		double alpha = 0.999;
-		int iterationsParPalier = 500;
+		int iterationsParPalier = 100;
 
 		Solution actuelle = genererSolutionInitiale();
 		calculerDistanceTotale(actuelle);
@@ -58,7 +69,9 @@ public class RecuitSimuleCVRP {
 						meilleure = actuelle.copie();
 					}
 				}
+				System.out.println(actuelle);
 			}
+			afficherResultats(actuelle);
 			temperature *= alpha;
 		}
 

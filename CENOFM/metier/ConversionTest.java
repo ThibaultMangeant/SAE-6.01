@@ -1,4 +1,3 @@
-package CENOFM.metier;
 
 import java.io.IOException;
 
@@ -7,7 +6,7 @@ public class ConversionTest {
 		final int NB_VEHICULE = 4;
 
 		String inputPath = "src/cantines.txt";
-		String outputPath = "CPLEX/cantines_test.dat";
+		String outputPath = "test/cantines.txt";
 
 		try {
 			DonneesVrp donnees = new LectureVrp().charger(inputPath, NB_VEHICULE);
