@@ -53,6 +53,8 @@ public class RecuitSimuleCVRP {
 		double alpha = 0.999;
 		int iterationsParPalier = 100;
 
+		long tempsDebut = System.currentTimeMillis();
+
 		Solution actuelle = genererSolutionInitiale();
 		calculerDistanceTotale(actuelle);
 		Solution meilleure = actuelle.copie();
@@ -62,7 +64,6 @@ public class RecuitSimuleCVRP {
 		while (temperature > temperatureMin) {
 			for (int i = 0; i < iterationsParPalier; i++) {
 				Solution voisin = genererVoisin(actuelle);
-
 				double delta = voisin.distanceTotale - actuelle.distanceTotale;
 
 				if (delta < 0 || Math.exp(-delta / temperature) > random.nextDouble()) {
@@ -71,13 +72,15 @@ public class RecuitSimuleCVRP {
 						meilleure = actuelle.copie();
 					}
 				}
-				//System.out.println(actuelle);
 			}
-			afficherResultats(actuelle);
 			temperature *= alpha;
 		}
 
-		return afficherResultats(meilleure);
+		long tempsFin = System.currentTimeMillis();
+		double tempsTotal = (tempsFin - tempsDebut) / 1000.0; // Conversion en secondes
+
+		System.out.println(afficherResultats(meilleure, 0));
+		System.out.println("Temps de résolution : " + tempsTotal + " secondes");
 	}
 
 	private Solution genererVoisin(Solution actuelle) {
@@ -197,8 +200,9 @@ public class RecuitSimuleCVRP {
 		return total;
 	}
 
-	public String afficherResultats(Solution s) {
-		String resultat = "\n--- SOLUTION ---\n";
+	public String afficherResultats(Solution s, int iteration) {
+
+		String resultat = (iteration > 0 ? "Itération : " + iteration + "\n" : "Meilleure solution : \n");
 
 		resultat += "Distance totale : " + String.format("%.2f", s.distanceTotale) + "\n";
 		resultat += "Nombre de véhicules : " + s.tournees.size() + "\n";
