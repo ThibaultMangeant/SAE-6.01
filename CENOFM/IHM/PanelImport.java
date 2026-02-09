@@ -267,20 +267,19 @@ public class PanelImport extends JPanel implements ActionListener {
 
 		while (true)
 		{
-			int result = JOptionPane.showConfirmDialog(this, contenu, "Paramètres du recuit simulé",
-					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+			int result = JOptionPane.showConfirmDialog(this, contenu, "Paramètres du recuit simulé", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
-			// Annuler → on stoppe
+			// Annuler → stop immédiat
 			if (result != JOptionPane.OK_OPTION) { return false; }
 
 			boolean erreur = false;
 			StringBuilder message = new StringBuilder("Veuillez corriger les champs suivants :\n");
 
-			Double tInit 	= null;
-			Double seuil 	= null;
-			Double a 		= null;
+			Double tInit = null;
+			Double seuil = null;
+			Double a = null;
 
-			// --- Validation ch1 ---
+			// Validation ch1
 			try
 			{
 				tInit = Double.parseDouble(ch1.getText().trim());
@@ -292,7 +291,7 @@ public class PanelImport extends JPanel implements ActionListener {
 				ch1.setText("");
 			}
 
-			// --- Validation ch2 ---
+			// Validation ch2
 			try
 			{
 				seuil = Double.parseDouble(ch2.getText().trim());
@@ -304,7 +303,7 @@ public class PanelImport extends JPanel implements ActionListener {
 				ch2.setText("");
 			}
 
-			// --- Validation ch3 ---
+			// Validation ch3
 			try
 			{
 				a = Double.parseDouble(ch3.getText().trim());
@@ -316,28 +315,25 @@ public class PanelImport extends JPanel implements ActionListener {
 				ch3.setText("");
 			}
 
-			// S'il y a au moins une erreur → message + boucle
+			// ❌ Erreurs → on reboucle
 			if (erreur)
 			{
 				JOptionPane.showMessageDialog(this, message.toString(), "Valeurs invalides", JOptionPane.ERROR_MESSAGE);
 
-				// Focus intelligent : premier champ vide
-				if (ch1.getText().isEmpty()) { ch1.requestFocusInWindow(); }
+				if (ch1.getText().isEmpty()){ ch1.requestFocusInWindow(); }
 				else if (ch2.getText().isEmpty()) { ch2.requestFocusInWindow(); }
 				else { ch3.requestFocusInWindow(); }
+					
 
 				continue;
 			}
 
-			// Tout est valide → on stocke
+			// ✅ Tout est bon → on stocke et on QUITTE
 			this.tempInit = tInit;
 			this.seuilArret = seuil;
 			this.alpha = a;
 
-			return true;
+			return true; // ⬅️ FERMETURE DÉFINITIVE
 		}
 	}
-
-
-
 }

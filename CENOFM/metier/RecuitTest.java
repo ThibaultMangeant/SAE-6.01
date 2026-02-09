@@ -9,7 +9,7 @@ public class RecuitTest {
 			DonneesVrp donnees = lecteur.charger("src/cantines.txt", NB_VEHICULE);
 
 			RecuitSimuleCVRP rs = new RecuitSimuleCVRP(donnees.clients, donnees.depot, donnees.qMax);
-			rs.resoudre();
+			rs.resoudre( 0.4, 0.4, 0.4);
 
 		} catch (Exception e) {
 			System.err.println("Erreur lors du test de recuit : " + e.getMessage());
