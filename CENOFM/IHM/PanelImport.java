@@ -87,8 +87,6 @@ public class PanelImport extends JPanel implements ActionListener {
 		this.add(this.panelCentre, BorderLayout.CENTER);
 
 		this.btnImporter.addActionListener(this);
-		this.btnConvertir.addActionListener(this);
-		this.btnRecuit.addActionListener(this);
 	}
 
 	public static JButton styliserBouton(String txt) {
@@ -124,6 +122,8 @@ public class PanelImport extends JPanel implements ActionListener {
 						this.panelCentre.revalidate();
 						this.panelCentre.repaint();
 					}
+					this.btnConvertir.addActionListener(this);
+					this.btnRecuit.addActionListener(this);
 				} catch (IOException ex)
 				{
 					JOptionPane.showMessageDialog(this, "Erreur lors de la lecture du fichier", "Erreur", JOptionPane.ERROR_MESSAGE);
