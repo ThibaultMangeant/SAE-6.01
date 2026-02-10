@@ -43,7 +43,7 @@ public class FrameGraphique
 			String edgeId = "Arc " + i + "-" + j;
 			if (!graph.getNode(graphNodes[i].getId()).hasEdgeBetween(graphNodes[j].getId()))
 			{
-				graph.addEdge(edgeId, graphNodes[i].getId(), graphNodes[j].getId());
+				graph.addEdge(edgeId, graphNodes[i].getId(), graphNodes[j].getId(), true);
 			}
 		}
 
