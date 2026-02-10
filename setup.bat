@@ -1,7 +1,7 @@
 @echo off
 
 REM Compilation
-javac -d bin "CENOFM\*.java" "CENOFM\IHM\*.java" "CENOFM\metier\*.java"
+javac -cp "lib\*" -d bin "CENOFM\*.java" "CENOFM\IHM\*.java" "CENOFM\metier\*.java"
 
 REM Exécution
-java --enable-preview -cp "bin" CENOFM.Controleur
+java --enable-preview -cp "bin;lib\*" CENOFM.Controleur
