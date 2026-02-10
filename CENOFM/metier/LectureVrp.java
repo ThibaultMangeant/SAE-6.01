@@ -1,3 +1,5 @@
+package CENOFM.metier;
+
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Scanner;

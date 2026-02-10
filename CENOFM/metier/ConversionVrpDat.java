@@ -1,3 +1,5 @@
+package CENOFM.metier;
+
 import java.io.*;
 import java.util.*;
 

@@ -1,3 +1,5 @@
+package CENOFM.metier;
+
 public class RecuitTest {
 	public static void main(String[] args) {
 		final int NB_VEHICULE = 4;

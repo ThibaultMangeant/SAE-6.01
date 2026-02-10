@@ -1,3 +1,5 @@
+package CENOFM.metier;
+
 import java.io.IOException;
 
 public class ConversionTest {

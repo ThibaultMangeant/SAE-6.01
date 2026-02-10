@@ -1,3 +1,5 @@
+package CENOFM.metier;
+
 import java.util.ArrayList;
 import java.util.List;
 
