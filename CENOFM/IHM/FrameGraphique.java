@@ -9,8 +9,10 @@ import CENOFM.metier.Noeud;
 
 public class FrameGraphique
 {
+	private List<String> couleurs;
 	public FrameGraphique(int nbArcs, List<Noeud> clients)
 	{
+		this.couleurs = List.of("#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#800000", "#008000", "#000080", "#808000");
 		int nbClients = clients.size();
 
 		Node[] graphNodes = new Node[nbClients];
@@ -21,6 +23,7 @@ public class FrameGraphique
 		SingleGraph graph = new SingleGraph("CENOFM");
 		graph.setAttribute("ui.stylesheet", "node { shape:circle; fill-color:white; stroke-mode:plain; stroke-width:1; padding:5; stroke-color:black; text-mode:normal; text-background-color:white; text-alignment:center; text-size:16; size-mode:fit; }");
 
+		// Création des noeuds
 		for (Noeud client : clients)
 		{
 			if (client.getId() == 1)
@@ -32,6 +35,7 @@ public class FrameGraphique
 			graphNodes[client.getId() - 1] = node;
 		}
 
+		// Création des arcs
 		for (int i = 0 ; i < graph.getNodeCount() ; i++)
 		{
 			int j = i + 1;
@@ -42,7 +46,7 @@ public class FrameGraphique
 			if (!graph.getNode(graphNodes[i].getId()).hasEdgeBetween(graphNodes[j].getId()))
 			{
 				graph.addEdge(edgeId, graphNodes[i].getId(), graphNodes[j].getId(), true);
-				// this.colorerArc(graphNodes[i], graphNodes[j], "red");
+				// this.colorerArc(graphNodes[i], graphNodes[j], this.couleurs.get(i % this.couleurs.size()));
 			}
 		}
 
