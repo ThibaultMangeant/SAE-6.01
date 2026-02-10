@@ -1,5 +1,3 @@
-package CENOFM.metier;
-
 import java.io.*;
 import java.util.*;
 
@@ -15,8 +13,8 @@ public class ConversionVrpDat {
 		writer.println();
 
 		writer.println("nbClientDep = " + donnees.getTableauNoeudsComplet().length + ";");
-		writer.println("Qmax = " + donnees.qMax + ";");
-		writer.println("nbVehicules = " + donnees.nbVehicules + ";");
+		writer.println("Qmax = " + donnees.getqMax() + ";");
+		writer.println("nbVehicules = " + donnees.getNbVehicules() + ";");
 		writer.println();
 
 		writer.print("Demande = [");

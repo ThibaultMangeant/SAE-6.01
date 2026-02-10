@@ -1,5 +1,3 @@
-package CENOFM.metier;
-
 class Noeud {
     int id;
     double x, y;

@@ -1,43 +1,60 @@
-package CENOFM.metier;
-
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class DonneesVrp {
-	public int nbClients;
-	public int nbVehicules;
-	public double bestSolution;
-	public int qMax;
-	public Noeud depot;
-	public List<Noeud> clients = new ArrayList<>();
+	private int nbClients;
+	private int nbVehicules;
+	private double bestSolution;
+	private int qMax;
+	private Noeud depot;
+	private List<Noeud> clients = new ArrayList<>();
 
 	public int getNbClients() {
 		return nbClients;
+	}
+
+	public void setNbClients(int nbClients) {
+		this.nbClients = nbClients;
 	}
 
 	public int getNbVehicules() {
 		return nbVehicules;
 	}
 
+	public void setNbVehicules(int nbVehicules) {
+		this.nbVehicules = nbVehicules;
+	}
+
 	public double getBestSolution() {
 		return bestSolution;
+	}
+
+	public void setBestSolution(double bestSolution) {
+		this.bestSolution = bestSolution;
 	}
 
 	public int getqMax() {
 		return qMax;
 	}
 
+	public void setqMax(int qMax) {
+		this.qMax = qMax;
+	}
+
 	public Noeud getDepot() {
 		return depot;
+	}
+
+	public void setDepot(Noeud depot) {
+		this.depot = depot;
 	}
 
 	public List<Noeud> getClients() {
 		return clients;
 	}
 
-	public DonneesVrp getDonneesVrp() {
-		return this;
+	public void setClients(List<Noeud> clients) {
+		this.clients = clients;
 	}
 
 	public Noeud[] getTableauNoeudsComplet() {

@@ -1,5 +1,3 @@
-package CENOFM.metier;
-
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Scanner;
@@ -9,7 +7,7 @@ public class LectureVrp {
 	public DonneesVrp charger(String cheminFichier, int nbVehicules) throws IOException {
 		
 		DonneesVrp donnees = new DonneesVrp(); 
-		donnees.nbVehicules = nbVehicules;
+		donnees.setNbVehicules(nbVehicules);
 		Scanner sc = new Scanner(cheminFichier);
 		sc.useLocale(Locale.US);
 
@@ -19,21 +17,20 @@ public class LectureVrp {
 			throw new IOException("Le fichier est vide");
 		}
 
-		donnees.nbClients = sc.nextInt();
-		donnees.bestSolution = sc.nextDouble();
-		donnees.qMax = sc.nextInt();
+		donnees.setNbClients(sc.nextInt());
+		donnees.setBestSolution(sc.nextDouble());
+		donnees.setqMax(sc.nextInt());
 
 		double depotX = sc.nextDouble();
 		double depotY = sc.nextDouble();
-		donnees.depot = new Noeud(0, depotX, depotY, 0);
-
-		for (int i = 0; i < donnees.nbClients; i++)
+		donnees.setDepot(new Noeud(0, depotX, depotY, 0));
+		for (int i = 0; i < donnees.getNbClients(); i++)
 		{
 			int id = sc.nextInt();
 			double x = sc.nextDouble();
 			double y = sc.nextDouble();
 			int demande = sc.nextInt();
-			donnees.clients.add(new Noeud(id, x, y, demande));
+			donnees.getClients().add(new Noeud(id, x, y, demande));
 		}
 
 		sc.close();

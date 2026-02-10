@@ -1,5 +1,3 @@
-package CENOFM.metier;
-
 import java.util.*;
 
 class Solution {
@@ -46,16 +44,13 @@ public class RecuitSimuleCVRP {
 		this.qMax = qMax;
 	}
 
-	public String resoudre( double temperature, double temperatureMin, double alpha ) {
-/* 
-		double temperature = 1000.0;
-		double temperatureMin = 0.1;
-		double alpha = 0.999;*/
-		int iterationsParPalier = 100;
+	public String resoudre(double temperature, double temperatureMin, double alpha/* , int nbVehiculesMax */) {
 
+		int nbVehiculesMax = 10;
+		int iterationsParPalier = 100;
 		long tempsDebut = System.currentTimeMillis();
 
-		Solution actuelle = genererSolutionInitiale();
+		Solution actuelle = genererSolutionInitiale(nbVehiculesMax);
 		calculerDistanceTotale(actuelle);
 		Solution meilleure = actuelle.copie();
 
@@ -66,7 +61,8 @@ public class RecuitSimuleCVRP {
 
 				if (delta < 0 || Math.exp(-delta / temperature) > random.nextDouble()) {
 					actuelle = voisin;
-					if (actuelle.distanceTotale < meilleure.distanceTotale) {
+					if (actuelle.distanceTotale < meilleure.distanceTotale
+							&& actuelle.tournees.size() <= nbVehiculesMax) {
 						meilleure = actuelle.copie();
 					}
 				}
@@ -75,11 +71,11 @@ public class RecuitSimuleCVRP {
 		}
 
 		long tempsFin = System.currentTimeMillis();
-		double tempsTotal = (tempsFin - tempsDebut) / 1000.0; // Conversion en secondes
+		double tempsTotal = (tempsFin - tempsDebut) / 1000.0;
 
 		System.out.println("Temps de résolution : " + tempsTotal + " secondes");
-		return (afficherResultats(meilleure, 0));
-
+		System.out.println("Véhicules utilisés : " + meilleure.tournees.size() + " / " + nbVehiculesMax);
+		return ("Temps de résolution : " + tempsTotal + " secondes\n" + "Véhicules utilisés : " + meilleure.tournees.size() + " / " + nbVehiculesMax + "\n" + afficherResultats(meilleure, 0));
 	}
 
 	private Solution genererVoisin(Solution actuelle) {
@@ -168,12 +164,27 @@ public class RecuitSimuleCVRP {
 		}
 	}
 
-	private Solution genererSolutionInitiale() {
+	private Solution genererSolutionInitiale(int nbVehiculesMax) {
 		Solution sol = new Solution();
-		for (Noeud c : Noeuds) {
-			List<Noeud> nouvelleTournee = new ArrayList<>();
-			nouvelleTournee.add(c);
-			sol.tournees.add(nouvelleTournee);
+
+		List<Noeud> tourneeActuelle = new ArrayList<>();
+		sol.tournees.add(tourneeActuelle);
+		int chargeActuelle = 0;
+
+		for (Noeud n : Noeuds) {
+			if (chargeActuelle + n.demande <= qMax) {
+				tourneeActuelle.add(n);
+				chargeActuelle += n.demande;
+			} else {
+				if (sol.tournees.size() < nbVehiculesMax) {
+					tourneeActuelle = new ArrayList<>();
+					tourneeActuelle.add(n);
+					sol.tournees.add(tourneeActuelle);
+					chargeActuelle = n.demande;
+				} else {
+					sol.tournees.get(sol.tournees.size() - 1).add(n);
+				}
+			}
 		}
 		return sol;
 	}
