@@ -2,6 +2,7 @@ package CENOFM.IHM;
 
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.graph.Node;
+import org.graphstream.ui.view.Viewer;
 
 import java.util.List;
 import CENOFM.metier.Noeud;
@@ -26,7 +27,7 @@ public class FrameGraphique
 			if (client.getId() == 1)
 				node = graph.addNode("Dépôt");
 			else
-				node = graph.addNode("Client " + (client.getId() - 1));
+				node = graph.addNode("" + (client.getId() - 1));
 
 			node.setAttribute("ui.label", node.getId());
 			System.out.println("Création du noeud : " + node.getId());
@@ -45,6 +46,8 @@ public class FrameGraphique
 				graph.addEdge(edgeId, graphNodes[i].getId(), graphNodes[j].getId());
 			}
 		}
-		graph.display();
+
+		Viewer viewer = graph.display();
+		viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.HIDE_ONLY);
 	}
 }
