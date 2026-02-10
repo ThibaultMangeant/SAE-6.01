@@ -3,6 +3,7 @@ package CENOFM;
 import java.io.IOException;
 
 import CENOFM.IHM.FrameMain;
+import CENOFM.IHM.FrameGraphique;
 import CENOFM.metier.LectureVrp;
 import CENOFM.metier.ConversionVrpDat;
 import CENOFM.metier.RecuitSimuleCVRP;
@@ -24,7 +25,7 @@ public class Controleur {
 
 	public void extractionDonnee( String txt, int nbV )
 	{
-		try { this.donnee = this.lect.charger(txt, nbV);  } 
+		try { this.donnee = this.lect.charger(txt, nbV); } 
 		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); } 
 	}
 
@@ -36,6 +37,7 @@ public class Controleur {
 
 	public String resoudre( double temperature, double temperatureMin, double alpha ) { 
 		RecuitSimuleCVRP rs = new RecuitSimuleCVRP(this.donnee.getClients(), this.donnee.getDepot(), this.donnee.getqMax());
+		new FrameGraphique(15, this.donnee.getClients());
 		return rs.resoudre( temperature, temperatureMin, alpha );
 	}
 }
