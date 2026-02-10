@@ -2,6 +2,7 @@ package CENOFM.IHM;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.FlowLayout;
 import java.awt.event.*;
 import java.awt.Font;
 import java.io.BufferedReader;
@@ -15,6 +16,7 @@ import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,18 +28,28 @@ public class PanelImport extends JPanel implements ActionListener {
 	private FrameMain 	frame;
 	private JPanel 		panelBtn;
 	private JPanel 		panelCentre;
+	private JPanel 		panelTxt;
+	private JPanel 		panelInfoTxt;
+	private JPanel 		panelRecuit;
+	private JPanel 		panelInfoRec;
 	private JTextArea 	txtVrp;
 	private JScrollPane sp;
+	private JLabel		lblNbVehi;
 	private JTextArea 	txtResoudre;
 	private JScrollPane spResoudre;
+	private JLabel 		lblTempIt;
+	private JLabel 		lblSeuilArr;
+	private JLabel 		lblAlpha;
+	private JLabel 		lblNbEtArr;
 
 	private JButton btnImporter;
 	private JButton btnConvertir;
 	private JButton btnRecuit;
+	private JButton btnChNbVehi;
 
-	public static Color CFondBtn 	= Color.decode("#9abddb");
-	public static Color CTexte 		= Color.decode("#1c4587");
-	public static Color CFond 		= Color.decode("#abcce7");
+	public static Color CFondBtn 	= Color.decode( "#9abddb" );
+	public static Color CTexte 		= Color.decode( "#1c4587" );
+	public static Color CFond 		= Color.decode( "#abcce7" );
 	private Font ft;
 
 	private String 	dernierDossier = null;
@@ -53,48 +65,60 @@ public class PanelImport extends JPanel implements ActionListener {
 		this.setLocation( 10, 10 );
 		this.setSize( 800, 500 );
 
-		this.btnImporter 	= styliserBouton( "Importer" );
-		this.btnConvertir 	= styliserBouton( "Convertir en dat" );
-		this.btnRecuit 		= styliserBouton( "Recuit simulé" );
+		this.btnImporter 	= styliserBouton( "Importer" 			);
+		this.btnConvertir 	= styliserBouton( "Convertir en dat" 	);
+		this.btnRecuit 		= styliserBouton( "Recuit simulé" 		);
 
-		this.txtVrp = new JTextArea( "Importer un fichier correspondant a la structure demander." );
-		this.txtResoudre = new JTextArea( "  " );
+		this.txtVrp 		= new JTextArea( "Importer un fichier correspondant a la structure demander." );
+		this.txtResoudre 	= new JTextArea( "  " );
 
 		Border border = BorderFactory.createLineBorder( CFond );
 		border = BorderFactory.createCompoundBorder( border, BorderFactory.createEmptyBorder( 10, 10, 10, 10 ) );
 
-		this.txtVrp.		setWrapStyleWord( true );
-		this.txtResoudre.	setWrapStyleWord( true );
-		this.txtVrp.		setBorder		( border );
-		this.txtResoudre.	setBorder		( border );
-		this.txtVrp.		setEditable		( false );
-		this.txtResoudre.	setEditable		( false );
+		this.txtVrp.		setWrapStyleWord( true 	);
+		this.txtResoudre.	setWrapStyleWord( true 	);
+		this.txtVrp.		setBorder		( border 		);
+		this.txtResoudre.	setBorder		( border 		);
+		this.txtVrp.		setEditable		( false 		);
+		this.txtResoudre.	setEditable		( false 		);
 
 		this.panelBtn = new JPanel( new GridLayout( 1, 3, 0, 3 ) );
 		this.ft = new Font( "Montserrat", Font.BOLD, 18 );
 		this.btnImporter.	setFont( this.ft );
 		this.btnConvertir.	setFont( this.ft );
 		this.btnRecuit.		setFont( this.ft );
-		this.panelBtn.		add( this.btnImporter );
-		this.panelBtn.		add( this.btnConvertir );
-		this.panelBtn.		add( this.btnRecuit );
+		this.panelBtn.		add( this.btnImporter 	);
+		this.panelBtn.		add( this.btnConvertir 	);
+		this.panelBtn.		add( this.btnRecuit 	);
 		this.add( this.panelBtn, BorderLayout.NORTH );
 
-		this.panelCentre = new JPanel( new GridLayout( 1, 2, 0, 3 ) );
+		this.panelCentre 	= new JPanel( new GridLayout	( 1, 2, 0, 3 	));  
+		this.panelInfoTxt 	= new JPanel(new FlowLayout		(FlowLayout.LEFT, 10, 0 	));
+		this.panelTxt 		= new JPanel(new BorderLayout	(0, 3 						));
+		this.panelInfoRec 	= new JPanel(new GridLayout		(2, 2, 0, 3 	));
+		this.panelRecuit 	= new JPanel(new BorderLayout	(0, 8 						));
 		this.sp = new JScrollPane();
 		this.sp.setViewportView( this.txtVrp );
-		this.spResoudre 	= new JScrollPane();
-		this.txtResoudre 	= new JTextArea( "Ja passe !" );
-		this.spResoudre.setViewportView( this.txtResoudre );
 
-		this.panelCentre.add( this.sp );
+		this.spResoudre 		= new JScrollPane(); 
+		this.txtResoudre 		= new JTextArea( "Ja passe !" ); 
+		this.spResoudre.setViewportView( this.txtResoudre );
+		this.lblNbVehi 			= new JLabel( " " );
+		this.btnChNbVehi		= new JButton( "Changer le nombre de véhicule" );
+
+		this.panelInfoTxt.	add( this.lblNbVehi 				);
+		this.panelInfoTxt.	add( this.btnChNbVehi 				);
+		this.panelTxt.		add( this.sp, BorderLayout.CENTER 	);
+		this.panelCentre.	add( this.panelTxt 					);
+
 		this.add( this.panelCentre, BorderLayout.CENTER );
 
-		this.btnImporter.	addActionListener( this );
-		this.btnConvertir.	addActionListener( this );
-		this.btnRecuit.		addActionListener( this );
-		this.btnRecuit.		setEnabled( false );
-		this.btnConvertir.	setEnabled( false );
+		this.btnImporter.		addActionListener( this );
+		this.btnConvertir.		addActionListener( this );
+		this.btnRecuit.			addActionListener( this );
+		this.btnChNbVehi.		addActionListener( this );
+		this.btnRecuit.			setEnabled( false );
+		this.btnConvertir.		setEnabled( false );
 	}
 
 	public static JButton styliserBouton( String txt ) {
@@ -114,22 +138,28 @@ public class PanelImport extends JPanel implements ActionListener {
 
 	public void actionPerformed( ActionEvent e ) {
 		if ( e.getSource() == this.btnImporter ) {
-			String cheminFichier1 = this.selectionnerFichier( "Choisissez un fichier txt" );
-			if ( cheminFichier1 == null ) { return; }
-			if ( cheminFichier1 != null ) {
-				try ( BufferedReader br = new BufferedReader( new FileReader( cheminFichier1 ) ) ) {
+			String cheminFichier = this.selectionnerFichier( "Choisissez un fichier txt" );
+			if ( cheminFichier == null ) { return; }
+			if ( cheminFichier != null ) {
+				try ( BufferedReader br = new BufferedReader( new FileReader( cheminFichier ) ) ) {
 					this.txtVrp.read( br, null );
 					this.txtVrp.setCaretPosition( 0 ); // revenir en haut du texte
-					this.frame.extractionDonnee( this.txtVrp.getText(), NombreVehi() );
+					NombreVehi();
+					this.lblNbVehi.setText("Nonbre de véhicule : " + this.nbVehicules);
+					if (!this.panelTxt.isAncestorOf(this.panelInfoTxt)) { this.panelTxt.add(this.panelInfoTxt, BorderLayout.NORTH); }
+					//this.panelTxt.add(this.lblNbVehi);
+					this.frame.extractionDonnee( this.txtVrp.getText(), this.nbVehicules );
 					if ( this.panelCentre.isAncestorOf( this.spResoudre ) )
 					{
 						this.panelCentre.remove( this.spResoudre );
 						this.txtResoudre.setText( "" );
-						this.panelCentre.revalidate();
-						this.panelCentre.repaint();
 					}
 					this.btnRecuit.setEnabled( true );
 					this.btnConvertir.setEnabled( true );
+					this.panelTxt.revalidate();
+					this.panelTxt.repaint();
+					this.panelCentre.revalidate();
+					this.panelCentre.repaint();
 				} catch ( IOException ex )
 				{
 					JOptionPane.showMessageDialog( this, "Erreur lors de la lecture du fichier", "Erreur", JOptionPane.ERROR_MESSAGE );
@@ -150,10 +180,37 @@ public class PanelImport extends JPanel implements ActionListener {
 			this.txtResoudre.setText( "" + this.frame.resoudre( this.tempInit, this.seuilArret, this.alpha ) );
 			this.txtResoudre.setCaretPosition( 0 );
 
-			if ( !this.panelCentre.isAncestorOf( this.spResoudre ) ) { this.panelCentre.add(this.spResoudre); }
+			if ( !this.panelCentre.isAncestorOf( this.spResoudre ) ) { 
+				this.lblTempIt 		= new JLabel( "Température Initial : " 	+ this.tempInit 	);
+				this.lblSeuilArr 	= new JLabel( "Seuil d'arret : " 		+ this.seuilArret 	);
+				this.lblAlpha 		= new JLabel( "Alpha : " 				+ this.alpha 		);
+				this.lblNbEtArr 	= new JLabel( "nb ittération arret : " 	+ this.nbIttArret 	);
 
-			this.panelCentre.revalidate();
-			this.panelCentre.repaint();
+				this.panelInfoRec.add( this.lblTempIt 		); 
+				this.panelInfoRec.add( this.lblSeuilArr 	);
+				this.panelInfoRec.add( this.lblAlpha 		); 
+				this.panelInfoRec.add( this.lblNbEtArr 		); 
+
+				this.panelRecuit.add( this.panelInfoRec, BorderLayout.NORTH 	);
+				this.panelRecuit.add( this.spResoudre, BorderLayout.CENTER 		);
+				this.panelCentre.add( this.panelRecuit 							);
+			}
+			this.panelRecuit.revalidate	();
+			this.panelRecuit.repaint	();
+			this.panelCentre.revalidate	();
+			this.panelCentre.repaint	();
+		}
+
+
+		if (e.getSource() == this.btnChNbVehi)
+		{
+			NombreVehi();
+			this.lblNbVehi.setText( "Nonbre de véhicule : " + this.nbVehicules );
+			this.frame.extractionDonnee( this.txtVrp.getText(), this.nbVehicules );
+			this.panelTxt.revalidate	();
+			this.panelTxt.repaint		();
+			this.panelCentre.revalidate	();
+			this.panelCentre.repaint	();
 		}
 
 	}
@@ -174,9 +231,7 @@ public class PanelImport extends JPanel implements ActionListener {
 					JOptionPane.OK_CANCEL_OPTION,
 					JOptionPane.QUESTION_MESSAGE
 			);
-
 			if ( result != JOptionPane.OK_OPTION ) { return -1;  }
-
 			try
 			{
 				this.nbVehicules = Integer.parseInt( champ.getText().trim() );
@@ -225,8 +280,8 @@ public class PanelImport extends JPanel implements ActionListener {
 		if ( dernierDossier != null ) { dialogueFichier.setDirectory(dernierDossier); }
 
 		// Suggestion d’extension (visuelle)
-		dialogueFichier.setFile( "*" + extension );
-		dialogueFichier.setVisible( true );
+		dialogueFichier.setFile		( "*" + extension );
+		dialogueFichier.setVisible	( true );
 
 		String nomFichier 	= dialogueFichier.getFile();
 		String dossier 		= dialogueFichier.getDirectory();
@@ -255,7 +310,7 @@ public class PanelImport extends JPanel implements ActionListener {
 		JTextField ch1 = new JTextField( 10 );
 		JTextField ch2 = new JTextField( 10 );
 		JTextField ch3 = new JTextField( 10 );
-		JTextField ch4 = new JTextField(10);
+		JTextField ch4 = new JTextField( 10 );
 
 		Font f = new Font( "Montserrat", Font.PLAIN, 14 );
 		ch1.setFont(f);
@@ -281,7 +336,7 @@ public class PanelImport extends JPanel implements ActionListener {
 			Double tInit 	= null;
 			Double seuil 	= null;
 			Double a 		= null;
-			Integer nbarret 	= null;
+			Integer nbarret = null;
 
 			// Validation ch1
 			try
@@ -299,7 +354,7 @@ public class PanelImport extends JPanel implements ActionListener {
 			try
 			{
 				seuil = Double.parseDouble( ch2.getText().trim() );
-				if (seuil <= 0) { throw new IllegalArgumentException(); }
+				if ( seuil <= 0 ) { throw new IllegalArgumentException(); }
 			} catch ( Exception e )
 			{
 				erreur = true;
@@ -322,9 +377,9 @@ public class PanelImport extends JPanel implements ActionListener {
 			// Validation ch4
 			try
 			{
-				nbarret = Integer.parseInt(ch4.getText().trim());
-				if (nbarret <= 0) { throw new IllegalArgumentException(); }
-			} catch (Exception e)
+				nbarret = Integer.parseInt( ch4.getText().trim() );
+				if ( nbarret <= 0 ) { throw new IllegalArgumentException(); }
+			} catch ( Exception e )
 			{
 				erreur = true;
 				message.append("• nombre d'itérations identique (entier positf)\n");
@@ -338,7 +393,7 @@ public class PanelImport extends JPanel implements ActionListener {
 
 				if 		( ch1.getText().isEmpty() ) 	{ ch1.requestFocusInWindow(); }
 				else if ( ch2.getText().isEmpty() ) 	{ ch2.requestFocusInWindow(); }
-				else if (ch3.getText().isEmpty()) 		{ ch3.requestFocusInWindow(); }
+				else if ( ch3.getText().isEmpty() ) 	{ ch3.requestFocusInWindow(); }
 				else 									{ ch4.requestFocusInWindow(); }
 				continue;
 			}
