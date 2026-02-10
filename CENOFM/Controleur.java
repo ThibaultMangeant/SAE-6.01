@@ -7,6 +7,8 @@ import CENOFM.IHM.FrameGraphique;
 import CENOFM.metier.LectureVrp;
 import CENOFM.metier.ConversionVrpDat;
 import CENOFM.metier.RecuitSimuleCVRP;
+import CENOFM.metier.ResultatRecuit;
+import CENOFM.metier.Solution;
 import CENOFM.metier.DonneesVrp;
 
 public class Controleur {
@@ -35,9 +37,29 @@ public class Controleur {
 		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); }
 	}
 
-	public String resoudre( double temperature, double temperatureMin, double alpha ) { 
-		RecuitSimuleCVRP rs = new RecuitSimuleCVRP(this.donnee.getClients(), this.donnee.getDepot(), this.donnee.getqMax());
-		new FrameGraphique(15, this.donnee.getClients());
-		return rs.resoudre( temperature, temperatureMin, alpha );
+	public String resoudre(double temperature, double temperatureMin, double alpha, int nbIttArret)
+	{
+		int interval = 50; // toutes les 50 itérations
+		RecuitSimuleCVRP rs = new RecuitSimuleCVRP(this.donnee);
+		ResultatRecuit r = rs.resoudre(temperature, temperatureMin, alpha, nbIttArret, interval);
+		String texte = "";
+
+		int compteur = interval;
+		for (Solution s : r.getSnapshots())
+		{
+			texte += "===== Solution à l'itération " + compteur + " =====\n";
+			texte += rs.formatterSolution(s);
+			texte += "\n";
+			compteur += interval;
+		}
+
+		texte += "===== Meilleure solution =====\n";
+		texte += rs.formatterSolution(r.getMeilleureSolution());
+		texte += "\nTemps d'exécution : " + r.getTempsExecution() + " secondes\n";
+
+		// Graphique avec la meilleure solution
+		//new FrameGraphique( r.getMeilleureSolution().getTournees(), this.donnee.getDepot());
+
+		return texte;
 	}
 }

@@ -57,7 +57,7 @@ public class PanelImport extends JPanel implements ActionListener {
 	private double 	tempInit;
 	private double 	seuilArret;
 	private double 	alpha;
-	private double 	nbIttArret;
+	private int 	nbIttArret;
 
 	public PanelImport( FrameMain fm ) {
 		this.frame = fm;
@@ -148,7 +148,8 @@ public class PanelImport extends JPanel implements ActionListener {
 					this.lblNbVehi.setText("Nonbre de véhicule : " + this.nbVehicules);
 					if (!this.panelTxt.isAncestorOf(this.panelInfoTxt)) { this.panelTxt.add(this.panelInfoTxt, BorderLayout.NORTH); }
 					//this.panelTxt.add(this.lblNbVehi);
-					this.frame.extractionDonnee( this.txtVrp.getText(), this.nbVehicules );
+					if ( verifierFormatFront( this.txtVrp.getText() ) ) { this.frame.extractionDonnee( this.txtVrp.getText(), this.nbVehicules ); }
+					
 					if ( this.panelCentre.isAncestorOf( this.spResoudre ) )
 					{
 						this.panelCentre.remove( this.spResoudre );
@@ -177,7 +178,7 @@ public class PanelImport extends JPanel implements ActionListener {
 			// Si annuler → STOP
 			if ( !paramRecuit() ) { return; }
 
-			this.txtResoudre.setText( "" + this.frame.resoudre( this.tempInit, this.seuilArret, this.alpha ) );
+			this.txtResoudre.setText( "" + this.frame.resoudre( this.tempInit, this.seuilArret, this.alpha, this.nbIttArret ) );
 			this.txtResoudre.setCaretPosition( 0 );
 
 			if ( !this.panelCentre.isAncestorOf( this.spResoudre ) ) { 
@@ -406,5 +407,75 @@ public class PanelImport extends JPanel implements ActionListener {
 
 			return true; // ⬅️ FERMETURE DÉFINITIVE
 		}
+	}
+
+	public boolean verifierFormatFront(String texte)
+	{
+		String[] lignes = texte.split("\\r?\\n");
+		if (lignes.length < 3)
+		{
+			JOptionPane.showMessageDialog(null, "Le fichier est trop court !");
+			return false;
+		}
+
+		try
+		{
+			// Première ligne : nbClients bestSolution
+			String[] premiereLigne = lignes[0].trim().split("\\s+");
+			if (premiereLigne.length != 2)
+			{
+				JOptionPane.showMessageDialog(null,
+						"Première ligne invalide : doit contenir nbClients et bestSolution");
+				return false;
+			}
+			int nbClients = Integer.parseInt(premiereLigne[0]);
+			Double.parseDouble(premiereLigne[1]); // bestSolution
+
+			// Deuxième ligne : Qmax
+			int qMax = Integer.parseInt(lignes[1].trim());
+			if (qMax <= 0)
+			{
+				JOptionPane.showMessageDialog(null, "Qmax doit être positif");
+				return false;
+			}
+
+			// Troisième ligne : depot X Y
+			String[] depotParts = lignes[2].trim().split("\\s+");
+			if (depotParts.length != 2)
+			{
+				JOptionPane.showMessageDialog(null, "Ligne dépôt invalide : doit contenir X et Y");
+				return false;
+			}
+			Double.parseDouble(depotParts[0]);
+			Double.parseDouble(depotParts[1]);
+
+			// Lignes suivantes : clients
+			for (int i = 3; i < 3 + nbClients; i++)
+			{ // Commence juste après le dépôt
+				if (i >= lignes.length)
+				{
+					JOptionPane.showMessageDialog(null, "Nombre de clients incohérent avec le nbClients indiqué");
+					return false;
+				}
+				String[] parts = lignes[i].trim().split("\\s+");
+				if (parts.length != 4)
+				{
+					JOptionPane.showMessageDialog(null,
+							"Ligne client " + (i - 2) + " invalide : doit contenir id x y demande");
+					return false;
+				}
+				Integer.parseInt(parts[0]); // id
+				Double.parseDouble(parts[1]); // x
+				Double.parseDouble(parts[2]); // y
+				Integer.parseInt(parts[3]); // demande
+			}
+
+		} catch (NumberFormatException e)
+		{
+			JOptionPane.showMessageDialog(null, "Format de nombre invalide : " + e.getMessage());
+			return false;
+		}
+
+		return true; // Tout est correct
 	}
 }

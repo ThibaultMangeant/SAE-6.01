@@ -1,38 +1,97 @@
 package CENOFM.metier;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class LectureVrp {
+public class LectureVrp
+{
 
-	public DonneesVrp charger(String cheminFichier, int nbVehicules) throws IOException {
-		
-		DonneesVrp donnees = new DonneesVrp(); 
+	public DonneesVrp charger(String contenuFichier, int nbVehicules) throws IOException
+	{
+		DonneesVrp donnees = new DonneesVrp();
 		donnees.setNbVehicules(nbVehicules);
-		Scanner sc = new Scanner(cheminFichier);
+
+		// ------------------------------
+		// Nettoyage du contenu : supprime lignes vides et trim
+		// ------------------------------
+		List<String> lines = new ArrayList<>();
+		Scanner scRaw = new Scanner(contenuFichier);
+		while (scRaw.hasNextLine())
+		{
+			String line = scRaw.nextLine().trim();
+			if (!line.isEmpty())
+				lines.add(line);
+		}
+		scRaw.close();
+
+		// Scanner sur le texte nettoyé
+		String cleanedContent = String.join("\n", lines);
+		Scanner sc = new Scanner(cleanedContent);
 		sc.useLocale(Locale.US);
 
-		if (!sc.hasNext())
+		try
+		{
+			// Vérification fichier vide
+			if (!sc.hasNext()) { throw new IOException("Le fichier est vide"); }
+			// ------------------------------
+			// En-tête : nbClients, bestSolution, Qmax
+			// ------------------------------
+			if (!sc.hasNextInt()) { throw new IOException("nbClients manquant ou invalide"); }
+			int nbClients = sc.nextInt();
+			if (nbClients <= 0) { throw new IOException("nbClients doit être positif"); }
+			donnees.setNbClients(nbClients);
+
+			if (!sc.hasNextDouble()) { throw new IOException("bestSolution manquante ou invalide"); }
+			double bestSolution = sc.nextDouble();
+			donnees.setBestSolution(bestSolution);
+
+			if (!sc.hasNextInt()) { throw new IOException("qMax manquant ou invalide"); }
+			int qMax = sc.nextInt();
+			if (qMax <= 0) { throw new IOException("qMax doit être positif"); }
+			donnees.setqMax(qMax);
+
+			// ------------------------------
+			// Dépôt : x y (optionnel 3e valeur pour compatibilité)
+			// ------------------------------
+			if (!sc.hasNextDouble())
+				throw new IOException("Coordonnée X du dépôt manquante ou invalide");
+			double depotX = sc.nextDouble();
+
+			if (!sc.hasNextDouble())
+				throw new IOException("Coordonnée Y du dépôt manquante ou invalide");
+			double depotY = sc.nextDouble();
+
+			// Optionnel : troisième valeur (parfois utilisée comme demande du
+			// dépôt)
+			double depotDemande = 0;
+			if (sc.hasNextDouble())
+				depotDemande = sc.nextDouble();
+
+			donnees.setDepot(new Noeud(0, depotX, depotY, (int) depotDemande));
+
+			// ------------------------------
+			// Clients : id x y demande
+			// ------------------------------
+			for (int i = 0; i < nbClients; i++)
+			{
+				if (!sc.hasNextInt()) { throw new IOException("ID client manquant à la ligne " + (i + 4)); }
+				int id = sc.nextInt();
+				if (!sc.hasNextDouble()) { throw new IOException("Coordonnée X manquante pour client " + id); }
+				double x = sc.nextDouble();
+				if (!sc.hasNextDouble()) { throw new IOException("Coordonnée Y manquante pour client " + id); }
+				double y = sc.nextDouble();
+				if (!sc.hasNextInt()) { throw new IOException("Demande manquante pour client " + id); }
+				int demande = sc.nextInt();
+				donnees.getClients().add(new Noeud(id, x, y, demande));
+			}
+
+		} catch (Exception e)
 		{
 			sc.close();
-			throw new IOException("Le fichier est vide");
-		}
-
-		donnees.setNbClients(sc.nextInt());
-		donnees.setBestSolution(sc.nextDouble());
-		donnees.setqMax(sc.nextInt());
-
-		double depotX = sc.nextDouble();
-		double depotY = sc.nextDouble();
-		donnees.setDepot(new Noeud(0, depotX, depotY, 0));
-		for (int i = 0; i < donnees.getNbClients(); i++)
-		{
-			int id = sc.nextInt();
-			double x = sc.nextDouble();
-			double y = sc.nextDouble();
-			int demande = sc.nextInt();
-			donnees.getClients().add(new Noeud(id, x, y, demande));
+			throw new IOException("Erreur lors de la lecture du fichier : " + e.getMessage());
 		}
 
 		sc.close();
