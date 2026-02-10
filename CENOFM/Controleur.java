@@ -37,7 +37,6 @@ public class Controleur {
 
 	public String resoudre( double temperature, double temperatureMin, double alpha ) { 
 		RecuitSimuleCVRP rs = new RecuitSimuleCVRP(this.donnee.getClients(), this.donnee.getDepot(), this.donnee.getqMax());
-		new FrameGraphique(15, this.donnee.getClients());
 		return rs.resoudre( temperature, temperatureMin, alpha );
 	}
 }
