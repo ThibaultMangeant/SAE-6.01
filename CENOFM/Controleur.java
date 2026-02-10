@@ -25,7 +25,7 @@ public class Controleur {
 
 	public void extractionDonnee( String txt, int nbV )
 	{
-		try { this.donnee = this.lect.charger(txt, nbV); } 
+		try { this.donnee = this.lect.charger(txt, nbV); new FrameGraphique(15, this.donnee.getClients());  } 
 		catch (IOException e) { System.err.println("Erreur : " + e.getMessage()); } 
 	}
 
