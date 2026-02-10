@@ -45,6 +45,7 @@ public class PanelImport extends JPanel implements ActionListener {
 	private double 	tempInit;
 	private double 	seuilArret;
 	private double 	alpha;
+	private double 	nbIttArret;
 
 	public PanelImport( FrameMain fm ) {
 		this.frame = fm;
@@ -254,15 +255,18 @@ public class PanelImport extends JPanel implements ActionListener {
 		JTextField ch1 = new JTextField( 10 );
 		JTextField ch2 = new JTextField( 10 );
 		JTextField ch3 = new JTextField( 10 );
+		JTextField ch4 = new JTextField(10);
 
 		Font f = new Font( "Montserrat", Font.PLAIN, 14 );
 		ch1.setFont(f);
 		ch2.setFont(f);
 		ch3.setFont(f);
+		ch4.setFont(f);
 
-		Object[] contenu = { 	"Température initiale (> 0) :", ch1, 
-								"Seuil d'arrêt (> 0) :", 		ch2,
-								"Alpha (entre 0.1 et 0.9) :", 	ch3 };
+		Object[] contenu = { 	"Température initiale (> 0) :", 					ch1, 
+								"Seuil d'arrêt (> 0) :", 							ch2,
+								"Alpha (entre 0.1 et 0.9) :", 						ch3,
+								"nombre d'itérations identique (entier positf) :", 	ch4 };
 
 		while ( true )
 		{
@@ -277,6 +281,7 @@ public class PanelImport extends JPanel implements ActionListener {
 			Double tInit 	= null;
 			Double seuil 	= null;
 			Double a 		= null;
+			Integer nbarret 	= null;
 
 			// Validation ch1
 			try
@@ -314,21 +319,35 @@ public class PanelImport extends JPanel implements ActionListener {
 				ch3.setText( "" );
 			}
 
+			// Validation ch4
+			try
+			{
+				nbarret = Integer.parseInt(ch4.getText().trim());
+				if (nbarret <= 0) { throw new IllegalArgumentException(); }
+			} catch (Exception e)
+			{
+				erreur = true;
+				message.append("• nombre d'itérations identique (entier positf)\n");
+				ch4.setText("");
+			}
+
 			// Erreurs → on reboucle
 			if ( erreur )
 			{
 				JOptionPane.showMessageDialog( this, message.toString(), "Valeurs invalides", JOptionPane.ERROR_MESSAGE );
 
-				if ( ch1.getText().isEmpty() ){ ch1.requestFocusInWindow(); }
-				else if ( ch2.getText().isEmpty() ) { ch2.requestFocusInWindow(); }
-				else { ch3.requestFocusInWindow(); }
+				if 		( ch1.getText().isEmpty() ) 	{ ch1.requestFocusInWindow(); }
+				else if ( ch2.getText().isEmpty() ) 	{ ch2.requestFocusInWindow(); }
+				else if (ch3.getText().isEmpty()) 		{ ch3.requestFocusInWindow(); }
+				else 									{ ch4.requestFocusInWindow(); }
 				continue;
 			}
 
 			// Tout est bon → on stocke et on QUITTE
-			this.tempInit = tInit;
+			this.tempInit 	= tInit;
 			this.seuilArret = seuil;
-			this.alpha = a;
+			this.alpha 		= a;
+			this.nbIttArret = nbarret;
 
 			return true; // ⬅️ FERMETURE DÉFINITIVE
 		}
