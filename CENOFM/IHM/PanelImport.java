@@ -229,7 +229,6 @@ public class PanelImport extends JPanel implements ActionListener {
 	{
 		JTextField champ = new JTextField( 10 );
 		champ.setFont( new Font( "Montserrat", Font.PLAIN, 14 ) );
-
 		Object[] contenu = { "Entrez le nombre de véhicules (entier positif) :", champ };
 
 		while ( true )

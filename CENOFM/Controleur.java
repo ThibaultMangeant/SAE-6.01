@@ -19,9 +19,9 @@ public class Controleur
 
 	public Controleur() throws Exception
 	{
-		this.ihm = new FrameMain(this);
-		this.lect = new LectureVrp();
-		this.donnee = new DonneesVrp();
+		this.ihm 		= new FrameMain		(this);
+		this.lect 		= new LectureVrp	();
+		this.donnee 	= new DonneesVrp	();
 	}
 
 	public static void main(String[] args) throws Exception { new Controleur(); }
@@ -41,23 +41,16 @@ public class Controleur
 	public String resoudre(double temperature, double temperatureMin, double alpha, int nbIttArret)
 	{
 		int interval = 50000;
-
 		RecuitSimuleCVRP rs = new RecuitSimuleCVRP(this.donnee);
 		ResultatRecuit r = rs.resoudre(temperature, temperatureMin, alpha, nbIttArret, interval);
-
 		StringBuilder texte = new StringBuilder();
-
 		int compteur = 0;
 
 		for (Solution s : r.getSnapshots())
 		{
-			if (compteur == 0)
-				texte.append("===== Solution Initiale =====\n");
-			else
-				texte.append("===== Solution à l'itération ").append(compteur).append(" =====\n");
-
+			if (compteur == 0) { texte.append("===== Solution Initiale =====\n"); }
+			else { texte.append("===== Solution à l'itération ").append(compteur).append(" =====\n"); }
 			texte.append(rs.formatterSolution(s)).append("\n");
-
 			compteur += interval;
 		}
 
@@ -67,7 +60,6 @@ public class Controleur
 
 		// ===== GRAPH =====
 		new FrameGraphique(r.getTourneesFinales());
-
 		return texte.toString();
 	}
 
