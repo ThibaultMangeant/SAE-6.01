@@ -109,9 +109,27 @@ public class PanelImport extends JPanel implements ActionListener {
 		this.panelInfoTxt.	add( this.lblNbVehi 				);
 		this.panelInfoTxt.	add( this.btnChNbVehi 				);
 		this.panelTxt.		add( this.sp, BorderLayout.CENTER 	);
-		this.panelCentre.	add( this.panelTxt 					);
 
 		this.add( this.panelCentre, BorderLayout.CENTER );
+
+		// Initialisation des labels du recuit
+		this.lblTempIt = new JLabel();
+		this.lblSeuilArr = new JLabel();
+		this.lblAlpha = new JLabel();
+		this.lblNbEtArr = new JLabel();
+
+		// Ajout des labels dans le panel
+		this.panelInfoRec.add(this.lblTempIt);
+		this.panelInfoRec.add(this.lblSeuilArr);
+		this.panelInfoRec.add(this.lblAlpha);
+		this.panelInfoRec.add(this.lblNbEtArr);
+
+		// Ajout dans panelRecuit
+		this.panelRecuit.add(this.panelInfoRec, BorderLayout.NORTH);
+		this.panelRecuit.add(this.spResoudre, BorderLayout.CENTER);
+		
+		
+		this.panelCentre.add(this.panelTxt);
 
 		this.btnImporter.		addActionListener( this );
 		this.btnConvertir.		addActionListener( this );
@@ -173,33 +191,24 @@ public class PanelImport extends JPanel implements ActionListener {
 			if ( cheminSortie != null ) { this.frame.convertir( cheminSortie ); }
 		}
 
-		if ( e.getSource() == this.btnRecuit )
+		if (e.getSource() == this.btnRecuit)
 		{
-			// Si annuler → STOP
-			if ( !paramRecuit() ) { return; }
+			if (!paramRecuit()) { return; }
 
-			this.txtResoudre.setText( "" + this.frame.resoudre( this.tempInit, this.seuilArret, this.alpha, this.nbIttArret ) );
-			this.txtResoudre.setCaretPosition( 0 );
+			this.txtResoudre.setText("" + this.frame.resoudre(this.tempInit, this.seuilArret, this.alpha, this.nbIttArret));
+			this.txtResoudre.setCaretPosition(0);
 
-			if ( !this.panelCentre.isAncestorOf( this.spResoudre ) ) { 
-				this.lblTempIt 		= new JLabel( "Température Initial : " 	+ this.tempInit 	);
-				this.lblSeuilArr 	= new JLabel( "Seuil d'arret : " 		+ this.seuilArret 	);
-				this.lblAlpha 		= new JLabel( "Alpha : " 				+ this.alpha 		);
-				this.lblNbEtArr 	= new JLabel( "nb ittération arret : " 	+ this.nbIttArret 	);
+			// Mettre à jour les labels (au lieu de les recréer)
+			this.lblTempIt.setText("Température Initial : " + this.tempInit);
+			this.lblSeuilArr.setText("Seuil d'arret : " + this.seuilArret);
+			this.lblAlpha.setText("Alpha : " + this.alpha);
+			this.lblNbEtArr.setText("nb ittération arret : " + this.nbIttArret);
 
-				this.panelInfoRec.add( this.lblTempIt 		); 
-				this.panelInfoRec.add( this.lblSeuilArr 	);
-				this.panelInfoRec.add( this.lblAlpha 		); 
-				this.panelInfoRec.add( this.lblNbEtArr 		); 
+			// Ajout seulement si pas encore présent
+			if (!this.panelCentre.isAncestorOf(this.panelRecuit)) { this.panelCentre.add(this.panelRecuit); }
 
-				this.panelRecuit.add( this.panelInfoRec, BorderLayout.NORTH 	);
-				this.panelRecuit.add( this.spResoudre, BorderLayout.CENTER 		);
-				this.panelCentre.add( this.panelRecuit 							);
-			}
-			this.panelRecuit.revalidate	();
-			this.panelRecuit.repaint	();
-			this.panelCentre.revalidate	();
-			this.panelCentre.repaint	();
+			this.panelCentre.revalidate();
+			this.panelCentre.repaint();
 		}
 
 

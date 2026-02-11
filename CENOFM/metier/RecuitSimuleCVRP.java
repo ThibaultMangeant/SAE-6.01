@@ -121,10 +121,7 @@ public class RecuitSimuleCVRP
 			iteration++;
 
 			// Snapshot toutes les X itérations
-			if (iteration % intervalObservation == 0)
-			{
-				snapshots.add(actuelle.copie());
-			}
+			if (iteration % intervalObservation == 0) { snapshots.add(actuelle.copie()); }
 
 			// Refroidissement
 			temperature *= alpha;
