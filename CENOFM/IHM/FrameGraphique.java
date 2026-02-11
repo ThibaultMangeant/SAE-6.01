@@ -1,7 +1,6 @@
 package CENOFM.IHM;
 
 import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.ui.view.Viewer;
 
@@ -32,29 +31,23 @@ public class FrameGraphique
 	{
 		Node node;
 
-		// Création des noeuds
+		/* Création des noeuds */
+
+		// Ajout du dépôt
+		if (graph.getNode("0") == null)
+		{
+			node = graph.addNode("0");
+			node.setAttribute("ui.label", "Dépôt");
+			this.colorerNode(node, "#b7b7b7");
+		}
+
+		// Ajout des clients
 		for (List<Noeud> clientList : solution)
 		{
 			for (Noeud client : clientList)
 			{
-				if (client.getId() == 0)
-					if (graph.getNode("0") == null)
-						node = graph.addNode("" + client.getId());
-					else
-						node = null;
-				else
-					node = graph.addNode("" + client.getId());
-
-				if (node != null)
-				{
-					if (client.getId() == 0)
-					{
-						node.setAttribute("ui.label", "Dépôt");
-						this.colorerNode(node, "#b7b7b7");
-					}
-					else
-						node.setAttribute("ui.label", node.getId());
-				}
+				node = graph.addNode("" + client.getId());
+				node.setAttribute("ui.label", node.getId());
 			}
 		}
 	}
@@ -66,17 +59,31 @@ public class FrameGraphique
 		{
 			List<Noeud> clientList = solution.get(vehicule);
 
-			for (int i = 0; i < clientList.size(); i++)
+			for (int i = -1; i <= clientList.size(); i++)
 			{
-				Noeud client1 = clientList.get(i);
-				Noeud client2 = (i + 1 < clientList.size()) ? clientList.get(i + 1) : clientList.get(0);
+				// Arc entre le dépôt et le premier client
+				if (i == -1)
+				{
+					graph.addEdge("Arc 0-" + clientList.get(i + 1).getId(), "0", "" + clientList.get(i + 1).getId(), true);
+					this.colorerArc(graph.getNode("0"), graph.getNode("" + clientList.get(i + 1).getId()), this.couleurs.get(vehicule % this.couleurs.size()));
+				}
 
-				if (!graph.getNode("" + client1.getId()).hasEdgeBetween("" + client2.getId()))
+				// Arcs entre les clients
+				Noeud client1 = (i == -1 || i == clientList.size()) ? null : clientList.get(i);
+				Noeud client2 = (i + 1 < clientList.size()) ? clientList.get(i + 1) : null;
+
+				if ((client1 != null) && (client2 != null) && !graph.getNode("" + client1.getId()).hasEdgeBetween("" + client2.getId()))
 				{
 					String edgeId = "Arc " + client1.getId() + "-" + client2.getId();
-					Edge edge = graph.addEdge(edgeId, graph.getNode("" + client1.getId()).getId(), graph.getNode("" + client2.getId()).getId(), true);
+					graph.addEdge(edgeId, graph.getNode("" + client1.getId()).getId(), graph.getNode("" + client2.getId()).getId(), true);
 					this.colorerArc(graph.getNode("" + client1.getId()), graph.getNode("" + client2.getId()), this.couleurs.get(vehicule % this.couleurs.size()));
-					edge.setAttribute("ui.label", String.format("%.2f", client1.distance(client2)));
+				}
+
+				// Arc entre le dernier client et le dépôt
+				if (i == clientList.size())
+				{
+					graph.addEdge("Arc " + clientList.get(i - 1).getId() + "-0", "" + clientList.get(i - 1).getId(), "0", true);
+					this.colorerArc(graph.getNode("" + clientList.get(i - 1).getId()), graph.getNode("0"), this.couleurs.get(vehicule % this.couleurs.size()));
 				}
 			}
 		}
