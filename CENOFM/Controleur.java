@@ -39,27 +39,35 @@ public class Controleur {
 
 	public String resoudre(double temperature, double temperatureMin, double alpha, int nbIttArret)
 	{
-		int interval = 50; // toutes les 50 itérations
+		int interval = 50000;
+
 		RecuitSimuleCVRP rs = new RecuitSimuleCVRP(this.donnee);
 		ResultatRecuit r = rs.resoudre(temperature, temperatureMin, alpha, nbIttArret, interval);
-		String texte = "";
 
-		int compteur = interval;
+		StringBuilder texte = new StringBuilder();
+
+		int compteur = 0;
+
 		for (Solution s : r.getSnapshots())
 		{
-			texte += "===== Solution à l'itération " + compteur + " =====\n";
-			texte += rs.formatterSolution(s);
-			texte += "\n";
+			if (compteur == 0)
+				texte.append("===== Solution Initiale =====\n");
+			else
+				texte.append("===== Solution à l'itération ").append(compteur).append(" =====\n");
+
+			texte.append(rs.formatterSolution(s)).append("\n");
+
 			compteur += interval;
 		}
 
-		texte += "===== Meilleure solution =====\n";
-		texte += rs.formatterSolution(r.getMeilleureSolution());
-		texte += "\nTemps d'exécution : " + r.getTempsExecution() + " secondes\n";
+		texte.append("===== Meilleure Solution Finale =====\n");
+		texte.append(rs.formatterSolution(r.getMeilleureSolution()));
+		texte.append("\nTemps d'exécution : ").append(r.getTempsExecution()).append(" secondes\n");
 
-		// Graphique avec la meilleure solution
-		//new FrameGraphique( r.getMeilleureSolution().getTournees(), this.donnee.getDepot());
+		// ===== GRAPH =====
+		//new FrameGraphique(r.getTourneesFinales(), this.donnee.getDepot());
 
-		return texte;
+		return texte.toString();
 	}
+
 }

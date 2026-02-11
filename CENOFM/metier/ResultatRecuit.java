@@ -1,11 +1,7 @@
 package CENOFM.metier;
 
-import java.util.List;
+import java.util.*;
 
-/**
- * Contient : - la meilleure solution - les solutions intermédiaires (toutes les
- * X itérations) - le temps d'exécution - le nombre total d'itérations
- */
 public class ResultatRecuit
 {
 
@@ -14,16 +10,42 @@ public class ResultatRecuit
 	private final double tempsExecution;
 	private final int iterations;
 
+	// ➜ AJOUT
+	private final List<List<Noeud>> tourneesFinales;
+
 	public ResultatRecuit(Solution meilleure, List<Solution> snapshots, double temps, int iterations)
 	{
+
 		this.meilleureSolution = meilleure;
 		this.snapshots = snapshots;
 		this.tempsExecution = temps;
 		this.iterations = iterations;
+		this.tourneesFinales = meilleure.getTournees(); // important
 	}
 
-	public Solution getMeilleureSolution() { return meilleureSolution; }
-	public List<Solution> getSnapshots() { return snapshots; }
-	public double getTempsExecution() { return tempsExecution; }
-	public int getIterations() { return iterations; }
+	public Solution getMeilleureSolution()
+	{
+		return meilleureSolution;
+	}
+
+	public List<Solution> getSnapshots()
+	{
+		return snapshots;
+	}
+
+	public double getTempsExecution()
+	{
+		return tempsExecution;
+	}
+
+	public int getIterations()
+	{
+		return iterations;
+	}
+
+	// ➜ NOUVEAU GETTER
+	public List<List<Noeud>> getTourneesFinales()
+	{
+		return tourneesFinales;
+	}
 }

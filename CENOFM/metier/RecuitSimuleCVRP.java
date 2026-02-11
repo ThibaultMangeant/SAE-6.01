@@ -63,75 +63,61 @@ public class RecuitSimuleCVRP
 	public ResultatRecuit resoudre(double tempInit, double seuilArret, double alpha, int nbIttSansAmelioration,
 			int intervalObservation)
 	{
-
 		long debut = System.currentTimeMillis();
 
-		// Génération de la solution initiale
 		Solution actuelle = genererSolutionInitiale();
-
-		// Vérification des capacités
-		for (int i = 0; i < actuelle.getCharges().size(); i++)
-		{
-			if (actuelle.getCharges().get(i) > donnees.getqMax())
-			{
-				String msg = "Erreur : la solution initiale dépasse la capacité du véhicule " + (i + 1);
-				System.err.println(msg);
-
-				// Renvoi d'une solution "vide" pour le contrôleur
-				Solution erreurSol = new Solution();
-				erreurSol.setDistanceTotale(Double.POSITIVE_INFINITY);
-				return new ResultatRecuit(erreurSol, new ArrayList<>(), 0, 0);
-			}
-		}
-
 		calculerDistanceTotale(actuelle);
+
 		Solution meilleure = actuelle.copie();
+
 		List<Solution> snapshots = new ArrayList<>();
+		snapshots.add(actuelle.copie());
 
 		double temperature = tempInit;
 		int iteration = 0;
 		int iterationsSansAmelioration = 0;
 
-		// Boucle principale
+		int nbIterationsParPalier = 1000 + donnees.getNbClients() * 20;
+
 		while (temperature > seuilArret && iterationsSansAmelioration < nbIttSansAmelioration)
 		{
-
-			Solution voisin = genererVoisin(actuelle);
-			double delta = voisin.getDistanceTotale() - actuelle.getDistanceTotale();
-
-			if (delta < 0 || Math.exp(-delta / temperature) > random.nextDouble())
+			// ===== PALIER =====
+			for (int i = 0; i < nbIterationsParPalier; i++)
 			{
-				actuelle = voisin;
+				Solution voisin = genererVoisin(actuelle);
+				double delta = voisin.getDistanceTotale() - actuelle.getDistanceTotale();
 
-				if (actuelle.getDistanceTotale() < meilleure.getDistanceTotale())
+				if (delta <= 0 || Math.exp(-delta / temperature) > random.nextDouble())
 				{
-					meilleure = actuelle.copie();
-					iterationsSansAmelioration = 0; // reset compteur
+					actuelle = voisin;
+
+					if (actuelle.getDistanceTotale() < meilleure.getDistanceTotale())
+					{
+						meilleure = actuelle.copie();
+						iterationsSansAmelioration = 0;
+					}
+					else
+					{
+						iterationsSansAmelioration++;
+					}
 				}
 				else
 				{
 					iterationsSansAmelioration++;
 				}
+
+				iteration++;
+
+				if (iteration % intervalObservation == 0)
+					snapshots.add(actuelle.copie());
 			}
-			else
-			{
-				iterationsSansAmelioration++;
-			}
 
-			iteration++;
-
-			// Snapshot toutes les X itérations
-			if (iteration % intervalObservation == 0) { snapshots.add(actuelle.copie()); }
-
-			// Refroidissement
-			temperature *= alpha;
+			// 🔥 Refroidissement seulement après le palier
+			temperature = alpha * temperature;
 		}
 
 		long fin = System.currentTimeMillis();
 		double temps = (fin - debut) / 1000.0;
-
-		// Optionnel : afficher graphiquement
-		// new FrameGraphique(meilleure.getTournees(), donnees.getDepot());
 
 		return new ResultatRecuit(meilleure, snapshots, temps, iteration);
 	}
@@ -140,13 +126,18 @@ public class RecuitSimuleCVRP
 	private Solution genererVoisin(Solution sol)
 	{
 		Solution voisin = sol.copie();
-		int choix = random.nextInt(3);
+
+		int choix = random.nextInt(5);
+
 		switch (choix)
 		{
 		case 0 -> mouvementRelocate(voisin);
 		case 1 -> mouvementSwap(voisin);
 		case 2 -> mouvement2OptIntra(voisin);
+		case 3 -> mouvement2OptInter(voisin);
+		case 4 -> mouvementOrOpt(voisin);
 		}
+
 		calculerDistanceTotale(voisin);
 		return voisin;
 	}
@@ -224,47 +215,161 @@ public class RecuitSimuleCVRP
 		Collections.reverse(route.subList(i, j));
 	}
 
+	private void mouvement2OptInter(Solution sol)
+	{
+		if (sol.getTournees().size() < 2)
+			return;
+
+		int r1 = random.nextInt(sol.getTournees().size());
+		int r2 = random.nextInt(sol.getTournees().size());
+
+		if (r1 == r2)
+			return;
+
+		List<Noeud> route1 = sol.getTournees().get(r1);
+		List<Noeud> route2 = sol.getTournees().get(r2);
+
+		if (route1.size() < 2 || route2.size() < 2)
+			return;
+
+		int cut1 = random.nextInt(route1.size());
+		int cut2 = random.nextInt(route2.size());
+
+		List<Noeud> new1 = new ArrayList<>(route1.subList(0, cut1));
+		new1.addAll(route2.subList(cut2, route2.size()));
+
+		List<Noeud> new2 = new ArrayList<>(route2.subList(0, cut2));
+		new2.addAll(route1.subList(cut1, route1.size()));
+
+		int charge1 = new1.stream().mapToInt(n -> n.demande).sum();
+		int charge2 = new2.stream().mapToInt(n -> n.demande).sum();
+
+		if (charge1 <= donnees.getqMax() && charge2 <= donnees.getqMax())
+		{
+			sol.getTournees().set(r1, new1);
+			sol.getTournees().set(r2, new2);
+			sol.getCharges().set(r1, charge1);
+			sol.getCharges().set(r2, charge2);
+		}
+	}
+
+	private void mouvementOrOpt(Solution sol)
+	{
+		int r = random.nextInt(sol.getTournees().size());
+		List<Noeud> route = sol.getTournees().get(r);
+
+		if (route.size() < 3)
+			return;
+
+		int i = random.nextInt(route.size() - 2);
+		int j = i + 1 + random.nextInt(2);
+
+		List<Noeud> segment = new ArrayList<>(route.subList(i, j));
+		route.subList(i, j).clear();
+
+		int insertPos = random.nextInt(route.size());
+		route.addAll(insertPos, segment);
+	}
+
 	// Génère une solution initiale aléatoire respectant la capacité max
 	private Solution genererSolutionInitiale()
 	{
 		Solution sol = new Solution();
 
-		for (int i = 0; i < donnees.getNbVehicules(); i++)
-		{
-			sol.getTournees().add(new ArrayList<>());
-			sol.getCharges().add(0);
-		}
-
+		// 1️⃣ Une route par client
 		for (Noeud client : donnees.getClients())
 		{
-			if (client.demande > donnees.getqMax())
+			List<Noeud> route = new ArrayList<>();
+			route.add(client);
+
+			sol.getTournees().add(route);
+			sol.getCharges().add(client.demande);
+		}
+
+		calculerDistanceTotale(sol);
+
+		// 2️⃣ Calcul des savings
+		class Saving
+		{
+			Noeud i, j;
+			double value;
+
+			Saving(Noeud i, Noeud j, double v)
 			{
-				System.err.println("Erreur : le client " + client.id + " dépasse la capacité maximale du véhicule !");
-				continue; // on ignore ce client ou on pourrait arrêter
-							// l'algorithme
-			}
-			boolean ajoute = false;
-			// Chercher un véhicule avec assez de capacité
-			for (int v = 0; v < donnees.getNbVehicules(); v++)
-			{
-				if (sol.getCharges().get(v) + client.demande <= donnees.getqMax())
-				{
-					sol.getTournees().get(v).add(client);
-					sol.getCharges().set(v, sol.getCharges().get(v) + client.demande);
-					ajoute = true;
-					break;
-				}
-			}
-			if (!ajoute)
-			{
-				System.err.println(
-						"Erreur : impossible d’affecter le client " + client.id + " sans dépasser la capacité !");
-				// Ici on pourrait soit :
-				// - Créer un nouveau véhicule temporaire
-				// - Ou retourner null / solution invalide
+				this.i = i;
+				this.j = j;
+				this.value = v;
 			}
 		}
+
+		List<Saving> savings = new ArrayList<>();
+
+		for (Noeud i : donnees.getClients())
+		{
+			for (Noeud j : donnees.getClients())
+			{
+				if (i.id >= j.id)
+					continue;
+
+				double s = distance(0, i.id) + distance(0, j.id) - distance(i.id, j.id);
+
+				savings.add(new Saving(i, j, s));
+			}
+		}
+
+		savings.sort((a, b) -> Double.compare(b.value, a.value));
+
+		// 3️⃣ Fusion des routes
+		for (Saving s : savings)
+		{
+			List<Noeud> routeI = trouverRoute(sol, s.i);
+			List<Noeud> routeJ = trouverRoute(sol, s.j);
+
+			if (routeI == null || routeJ == null)
+				continue;
+			if (routeI == routeJ)
+				continue;
+
+			int chargeI = chargeRoute(sol, routeI);
+			int chargeJ = chargeRoute(sol, routeJ);
+
+			if (chargeI + chargeJ > donnees.getqMax())
+				continue;
+
+			if (routeI.get(routeI.size() - 1) == s.i && routeJ.get(0) == s.j)
+			{
+				routeI.addAll(routeJ);
+				sol.getTournees().remove(routeJ);
+			}
+		}
+
+		sol.getCharges().clear();
+		for (List<Noeud> r : sol.getTournees())
+		{
+			int c = 0;
+			for (Noeud n : r)
+				c += n.demande;
+			sol.getCharges().add(c);
+		}
+
+		calculerDistanceTotale(sol);
 		return sol;
+	}
+
+	private List<Noeud> trouverRoute(Solution sol, Noeud client)
+	{
+		for (List<Noeud> r : sol.getTournees())
+			if (r.contains(client))
+				return r;
+		return null;
+	}
+
+	private int chargeRoute(Solution sol, List<Noeud> r)
+	{
+		int sum = 0;
+		for (Noeud n : r)
+			sum += n.demande;
+		return sum;
 	}
 
 	// Calcule la distance totale d'une solution
