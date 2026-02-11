@@ -137,7 +137,7 @@ public class RecuitSimuleCVRP
 		case 3 -> mouvement2OptInter(voisin);
 		case 4 -> mouvementOrOpt(voisin);
 		}
-
+		nettoyerRoutesVides(voisin);
 		calculerDistanceTotale(voisin);
 		return voisin;
 	}
@@ -275,20 +275,21 @@ public class RecuitSimuleCVRP
 	private Solution genererSolutionInitiale()
 	{
 		Solution sol = new Solution();
+		int nbVehiculesMax = donnees.getNbVehicules(); // suppose que tu as
+														// cette info
 
-		// 1️⃣ Une route par client
+		// Une route par client
 		for (Noeud client : donnees.getClients())
 		{
 			List<Noeud> route = new ArrayList<>();
 			route.add(client);
-
 			sol.getTournees().add(route);
 			sol.getCharges().add(client.demande);
 		}
 
 		calculerDistanceTotale(sol);
 
-		// 2️⃣ Calcul des savings
+		// Calcul des savings
 		class Saving
 		{
 			Noeud i, j;
@@ -303,39 +304,35 @@ public class RecuitSimuleCVRP
 		}
 
 		List<Saving> savings = new ArrayList<>();
-
 		for (Noeud i : donnees.getClients())
 		{
 			for (Noeud j : donnees.getClients())
 			{
 				if (i.id >= j.id)
 					continue;
-
 				double s = distance(0, i.id) + distance(0, j.id) - distance(i.id, j.id);
-
 				savings.add(new Saving(i, j, s));
 			}
 		}
-
 		savings.sort((a, b) -> Double.compare(b.value, a.value));
 
-		// 3️⃣ Fusion des routes
+		// Fusion des routes avec respect du nbVehiculesMax
 		for (Saving s : savings)
 		{
+			if (sol.getTournees().size() <= nbVehiculesMax)
+				break; // ne pas dépasser le max
+
 			List<Noeud> routeI = trouverRoute(sol, s.i);
 			List<Noeud> routeJ = trouverRoute(sol, s.j);
-
-			if (routeI == null || routeJ == null)
-				continue;
-			if (routeI == routeJ)
+			if (routeI == null || routeJ == null || routeI == routeJ)
 				continue;
 
 			int chargeI = chargeRoute(sol, routeI);
 			int chargeJ = chargeRoute(sol, routeJ);
-
 			if (chargeI + chargeJ > donnees.getqMax())
 				continue;
 
+			// vérifier que la fusion se fait dans le bon ordre
 			if (routeI.get(routeI.size() - 1) == s.i && routeJ.get(0) == s.j)
 			{
 				routeI.addAll(routeJ);
@@ -343,15 +340,49 @@ public class RecuitSimuleCVRP
 			}
 		}
 
-		sol.getCharges().clear();
-		for (List<Noeud> r : sol.getTournees())
+		// Si on a encore trop de véhicules, fusion aléatoire
+		while (sol.getTournees().size() > nbVehiculesMax)
 		{
-			int c = 0;
-			for (Noeud n : r)
-				c += n.demande;
-			sol.getCharges().add(c);
+			List<Noeud> r1 = sol.getTournees().get(0);
+			List<Noeud> r2 = sol.getTournees().get(1);
+			int charge1 = chargeRoute(sol, r1);
+			int charge2 = chargeRoute(sol, r2);
+
+			if (charge1 + charge2 <= donnees.getqMax())
+			{
+				r1.addAll(r2);
+				sol.getTournees().remove(r2);
+			}
+			else
+			{
+				// si on ne peut pas fusionner les deux premières, essayer
+				// aléatoirement
+				int i = 0, j = 1;
+				boolean merged = false;
+				for (i = 0; i < sol.getTournees().size() && !merged; i++)
+				{
+					for (j = i + 1; j < sol.getTournees().size(); j++)
+					{
+						r1 = sol.getTournees().get(i);
+						r2 = sol.getTournees().get(j);
+						if (chargeRoute(sol, r1) + chargeRoute(sol, r2) <= donnees.getqMax())
+						{
+							r1.addAll(r2);
+							sol.getTournees().remove(r2);
+							merged = true;
+							break;
+						}
+					}
+				}
+				if (!merged) { break; }
+			}
 		}
 
+		sol.getCharges().clear();
+		for (List<Noeud> r : sol.getTournees())
+			sol.getCharges().add(chargeRoute(sol, r));
+
+		nettoyerRoutesVides(sol);
 		calculerDistanceTotale(sol);
 		return sol;
 	}
@@ -392,6 +423,18 @@ public class RecuitSimuleCVRP
 		sol.setDistanceTotale(total);
 	}
 
+	private void nettoyerRoutesVides(Solution sol)
+	{
+		for (int i = sol.getTournees().size() - 1; i >= 0; i--)
+		{
+			if (sol.getTournees().get(i).isEmpty())
+			{
+				sol.getTournees().remove(i);
+				sol.getCharges().remove(i);
+			}
+		}
+	}
+
 	// Formate une solution pour affichage
 	public String formatterSolution(Solution s)
 	{
@@ -401,11 +444,9 @@ public class RecuitSimuleCVRP
 		for (int i = 0; i < s.getTournees().size(); i++)
 		{
 			sb.append("Véhicule ").append(i + 1).append(" : Dépôt");
-			for (Noeud c : s.getTournees().get(i))
-				sb.append(" -> ").append(c.id);
+			for (Noeud c : s.getTournees().get(i)) { sb.append(" -> ").append(c.id); }
 			sb.append(" -> Dépôt\n");
 		}
 		return sb.toString();
 	}
-
 }

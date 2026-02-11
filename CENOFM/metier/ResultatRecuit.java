@@ -15,7 +15,6 @@ public class ResultatRecuit
 
 	public ResultatRecuit(Solution meilleure, List<Solution> snapshots, double temps, int iterations)
 	{
-
 		this.meilleureSolution = meilleure;
 		this.snapshots = snapshots;
 		this.tempsExecution = temps;
@@ -23,29 +22,11 @@ public class ResultatRecuit
 		this.tourneesFinales = meilleure.getTournees(); // important
 	}
 
-	public Solution getMeilleureSolution()
-	{
-		return meilleureSolution;
-	}
-
-	public List<Solution> getSnapshots()
-	{
-		return snapshots;
-	}
-
-	public double getTempsExecution()
-	{
-		return tempsExecution;
-	}
-
-	public int getIterations()
-	{
-		return iterations;
-	}
+	public Solution getMeilleureSolution() { return meilleureSolution; }
+	public List<Solution> getSnapshots() { return snapshots; }
+	public double getTempsExecution() { return tempsExecution; }
+	public int getIterations() { return iterations; }
 
 	// ➜ NOUVEAU GETTER
-	public List<List<Noeud>> getTourneesFinales()
-	{
-		return tourneesFinales;
-	}
+	public List<List<Noeud>> getTourneesFinales() { return tourneesFinales; }
 }
