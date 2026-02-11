@@ -56,35 +56,31 @@ public class LectureVrp
 			// ------------------------------
 			// Dépôt : x y (optionnel 3e valeur pour compatibilité)
 			// ------------------------------
-			if (!sc.hasNextDouble())
-				throw new IOException("Coordonnée X du dépôt manquante ou invalide");
+			if (!sc.hasNextDouble()) { throw new IOException("Coordonnée X du dépôt manquante ou invalide"); }
 			double depotX = sc.nextDouble();
 
-			if (!sc.hasNextDouble())
-				throw new IOException("Coordonnée Y du dépôt manquante ou invalide");
+			if (!sc.hasNextDouble()) { throw new IOException("Coordonnée Y du dépôt manquante ou invalide"); }
 			double depotY = sc.nextDouble();
 
-			// Optionnel : troisième valeur (parfois utilisée comme demande du
-			// dépôt)
-			double depotDemande = 0;
-			if (sc.hasNextDouble())
-				depotDemande = sc.nextDouble();
-
-			donnees.setDepot(new Noeud(0, depotX, depotY, (int) depotDemande));
+			donnees.setDepot(new Noeud(0, depotX, depotY, 0));
 
 			// ------------------------------
 			// Clients : id x y demande
 			// ------------------------------
 			for (int i = 0; i < nbClients; i++)
 			{
-				if (!sc.hasNextInt()) { throw new IOException("ID client manquant à la ligne " + (i + 4)); }
+				if (!sc.hasNextInt()) { break; }
 				int id = sc.nextInt();
-				if (!sc.hasNextDouble()) { throw new IOException("Coordonnée X manquante pour client " + id); }
+
+				if (!sc.hasNextDouble()) { break; }
 				double x = sc.nextDouble();
-				if (!sc.hasNextDouble()) { throw new IOException("Coordonnée Y manquante pour client " + id); }
+
+				if (!sc.hasNextDouble()) { break; }
 				double y = sc.nextDouble();
-				if (!sc.hasNextInt()) { throw new IOException("Demande manquante pour client " + id); }
+
+				if (!sc.hasNextInt()) { break; }
 				int demande = sc.nextInt();
+
 				donnees.getClients().add(new Noeud(id, x, y, demande));
 			}
 
