@@ -28,8 +28,8 @@ public class FrameMain extends JFrame
 	
 	public void extractionDonnee( String txt, int nbV ) { this.ct.extractionDonnee( txt, nbV );}
 	public void convertir( String outputPath ) { this.ct.convertir( outputPath); }
-	public String resoudre( double temperature, double temperatureMin, double alpha ) { 
-		return this.ct.resoudre( temperature, temperatureMin, alpha ); 
+	public String resoudre( double temperature, double temperatureMin, double alpha, int nbIttArret ) { 
+		return this.ct.resoudre( temperature, temperatureMin, alpha, nbIttArret ); 
 	}
 
 	public static void main(String[] args) { new FrameMain(null); }
