@@ -12,7 +12,8 @@ import CENOFM.metier.ConversionVrpDat;
 import CENOFM.metier.RecuitSimuleCVRP;
 import CENOFM.metier.DonneesVrp;
 
-public class Controleur {
+public class Controleur
+{
 	private FrameMain ihm;
 	private LectureVrp lect;
 	private DonneesVrp donnee;
@@ -51,7 +52,7 @@ public class Controleur {
 			clientsv3.add(new Noeud(7, 0, 0, 0));
 			clientsv3.add(new Noeud(9, 0, 0, 0));
 
-			List<List<Noeud>> solution = new ArrayList<>();
+			List<List<Noeud>> solution = new ArrayList<List<Noeud>>();
 			solution.add(clientsv1);
 			solution.add(clientsv2);
 			solution.add(clientsv3);
