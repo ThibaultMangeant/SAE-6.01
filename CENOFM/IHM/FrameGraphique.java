@@ -23,7 +23,7 @@ public class FrameGraphique
 		this.creationNodes(graph, solution);
 		this.creationArcs (graph, solution);
 
-		Viewer viewer = graph.display();
+		Viewer viewer = graph.display(false);
 		viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.HIDE_ONLY);
 	}
 
@@ -37,6 +37,7 @@ public class FrameGraphique
 		if (graph.getNode("0") == null)
 		{
 			node = graph.addNode("0");
+			node.setAttribute("xyz", 0, 0, 0);
 			node.setAttribute("ui.label", "Dépôt");
 			this.colorerNode(node, "#b7b7b7");
 		}
@@ -47,6 +48,7 @@ public class FrameGraphique
 			for (Noeud client : clientList)
 			{
 				node = graph.addNode("" + client.getId());
+				node.setAttribute("xyz", client.getX(), client.getY(), 0);
 				node.setAttribute("ui.label", node.getId());
 			}
 		}
