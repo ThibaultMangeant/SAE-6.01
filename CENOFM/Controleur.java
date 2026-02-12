@@ -16,6 +16,7 @@ public class Controleur
 	private FrameMain ihm;
 	private LectureVrp lect;
 	private DonneesVrp donnee;
+	private FrameGraphique frameGraphique;
 
 	public Controleur() throws Exception
 	{
@@ -66,7 +67,11 @@ public class Controleur
 		texte.append("\nTemps d'exécution : ").append(r.getTempsExecution()).append(" secondes\n");
 
 		// ===== GRAPH =====
-		new FrameGraphique(r.getTourneesFinales());
+		if (this.frameGraphique != null)
+		{
+			this.frameGraphique.fermerFenetre();
+		}
+		this.frameGraphique = new FrameGraphique(r.getTourneesFinales());
 
 		return texte.toString();
 	}
