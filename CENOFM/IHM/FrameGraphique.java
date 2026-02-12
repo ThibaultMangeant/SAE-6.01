@@ -11,6 +11,8 @@ import CENOFM.metier.Noeud;
 public class FrameGraphique
 {
 	private List<String> couleurs;
+	private Viewer viewer;
+
 	public FrameGraphique(List<List<Noeud>> solution)
 	{
 		this.couleurs = List.of("#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#800000", "#008000", "#000080", "#808000");
@@ -23,8 +25,8 @@ public class FrameGraphique
 		this.creationNodes(graph, solution);
 		this.creationArcs (graph, solution);
 
-		Viewer viewer = graph.display();
-		viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.HIDE_ONLY);
+		this.viewer = graph.display(false);
+		this.viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.HIDE_ONLY);
 	}
 
 	private void creationNodes(SingleGraph graph, List<List<Noeud>> solution)
@@ -37,6 +39,7 @@ public class FrameGraphique
 		if (graph.getNode("0") == null)
 		{
 			node = graph.addNode("0");
+			node.setAttribute("xyz", 0, 0, 0);
 			node.setAttribute("ui.label", "Dépôt");
 			this.colorerNode(node, "#b7b7b7");
 		}
@@ -47,6 +50,7 @@ public class FrameGraphique
 			for (Noeud client : clientList)
 			{
 				node = graph.addNode("" + client.getId());
+				node.setAttribute("xyz", client.getX(), client.getY(), 0);
 				node.setAttribute("ui.label", node.getId());
 			}
 		}
@@ -100,5 +104,10 @@ public class FrameGraphique
 		{
 			n1.getEdgeBetween(n2.getId()).addAttribute("ui.style", "fill-color:" + color + ";  size:3;");
 		}
+	}
+
+	public void fermerFenetre()
+	{
+		this.viewer.close();
 	}
 }

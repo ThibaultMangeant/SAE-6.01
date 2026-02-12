@@ -19,4 +19,6 @@ public class Noeud
 	}
 
 	public int getId() { return id; }
+	public double getX() { return x; }
+	public double getY() { return y; }
 }
