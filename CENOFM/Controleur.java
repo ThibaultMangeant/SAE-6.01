@@ -13,14 +13,13 @@ import CENOFM.metier.DonneesVrp;
 
 public class Controleur
 {
-	private FrameMain ihm;
 	private LectureVrp lect;
 	private DonneesVrp donnee;
 	private FrameGraphique frameGraphique;
 
 	public Controleur() throws Exception
 	{
-		this.ihm 		= new FrameMain		(this);
+		new FrameMain		(this);
 		this.lect 		= new LectureVrp	();
 		this.donnee 	= new DonneesVrp	();
 	}

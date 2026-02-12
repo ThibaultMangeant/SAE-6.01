@@ -11,7 +11,7 @@ public class RecuitTest {
 			sc.useLocale(Locale.US);
 
 			int nbNoeuds = sc.nextInt();
-			double bestConnu = sc.nextDouble();
+			sc.nextDouble();
 			int qMax = sc.nextInt();
 
 			Noeud depot = new Noeud(0, sc.nextDouble(), sc.nextDouble(), 0);
@@ -27,6 +27,7 @@ public class RecuitTest {
 
 			RecuitSimuleCVRP rs = new RecuitSimuleCVRP(Noeuds, depot, qMax);
 			rs.resoudre();
+			sc.close();
 
 		} catch (Exception e) {
 			e.printStackTrace();

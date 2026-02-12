@@ -22,7 +22,7 @@ public class ConversionVrpDat {
 		sc.useLocale(Locale.US);
 
 		int nbClients = sc.nextInt();
-		double bestSolution = sc.nextDouble();
+		sc.nextDouble();
 		int qMax = sc.nextInt();
 
 		double depotX = sc.nextDouble();

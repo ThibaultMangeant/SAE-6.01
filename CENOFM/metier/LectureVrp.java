@@ -34,31 +34,31 @@ public class LectureVrp
 		try
 		{
 			// Vérification fichier vide
-			if ( !sc.hasNext() ) { throw new IOException( "Le fichier est vide" ); }
+			if ( !sc.hasNext() ) { sc.close(); throw new IOException( "Le fichier est vide" ); }
 			// ------------------------------
 			// En-tête : nbClients, bestSolution, Qmax
 			// ------------------------------
-			if ( !sc.hasNextInt() ) { throw new IOException( "nbClients manquant ou invalide" ); }
+			if ( !sc.hasNextInt() ) { sc.close(); throw new IOException( "nbClients manquant ou invalide" ); }
 			int nbClients = sc.nextInt();
-			if ( nbClients <= 0 ) { throw new IOException( "nbClients doit être positif" ); }
+			if ( nbClients <= 0 ) { sc.close(); throw new IOException( "nbClients doit être positif" ); }
 			donnees.setNbClients(nbClients);
 
-			if ( !sc.hasNextDouble() ) { throw new IOException( "bestSolution manquante ou invalide" ); }
+			if ( !sc.hasNextDouble() ) { sc.close(); throw new IOException( "bestSolution manquante ou invalide" ); }
 			double bestSolution = sc.nextDouble();
 			donnees.setBestSolution(bestSolution);
 
-			if ( !sc.hasNextInt() ) { throw new IOException( "qMax manquant ou invalide" ); }
+			if ( !sc.hasNextInt() ) { sc.close(); throw new IOException( "qMax manquant ou invalide" ); }
 			int qMax = sc.nextInt();
-			if ( qMax <= 0 ) { throw new IOException( "qMax doit être positif" ); }
+			if ( qMax <= 0 ) { sc.close(); throw new IOException( "qMax doit être positif" ); }
 			donnees.setqMax(qMax);
 
 			// ------------------------------
 			// Dépôt : x y (optionnel 3e valeur pour compatibilité)
 			// ------------------------------
-			if ( !sc.hasNextDouble() ) { throw new IOException( "Coordonnée X du dépôt manquante ou invalide" ); }
+			if ( !sc.hasNextDouble() ) { sc.close(); throw new IOException( "Coordonnée X du dépôt manquante ou invalide" ); }
 			double depotX = sc.nextDouble();
 
-			if ( !sc.hasNextDouble() ) { throw new IOException( "Coordonnée Y du dépôt manquante ou invalide" ); }
+			if ( !sc.hasNextDouble() ) { sc.close(); throw new IOException( "Coordonnée Y du dépôt manquante ou invalide" ); }
 			double depotY = sc.nextDouble();
 
 			donnees.setDepot( new Noeud( 0, depotX, depotY, 0 ) );
