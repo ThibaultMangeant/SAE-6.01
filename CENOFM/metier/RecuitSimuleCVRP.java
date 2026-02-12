@@ -101,19 +101,34 @@ public class RecuitSimuleCVRP
 
 		switch ( choix )
 		{
-			case 0 -> mouvementRelocate		( voisin );
-			case 1 -> mouvementSwap			( voisin );
-			case 2 -> mouvement2OptIntra	( voisin );
-			case 3 -> mouvement2OptInter	( voisin );
-			case 4 -> mouvementOrOpt		( voisin );
+			case 0 -> deplacerClientEntreTournees		( voisin );
+			case 1 -> echangerClientsEntreTournees		( voisin );
+			case 2 -> inverserSegmentDansTournee		( voisin );
+			case 3 -> echangerSegmentsEntreTournees		( voisin );
+			case 4 -> relocaliserSegmentDansTournee		( voisin );
 		}
 		nettoyerRoutesVides		( voisin );
 		calculerDistanceTotale	( voisin );
 		return voisin;
 	}
 
-	// Déplace un client d'une tournée à une autre
-	private void mouvementRelocate( Solution sol )
+	/**
+	 * Déplace un client d'une tournée vers une autre tournée.
+	 * <p>
+	 * Étapes :
+	 * <ul>
+	 * <li>Sélectionne aléatoirement une tournée source</li>
+	 * <li>Sélectionne un client dans cette tournée</li>
+	 * <li>Tente de l'insérer dans une tournée cible</li>
+	 * <li>Le mouvement est validé uniquement si la contrainte de capacité est
+	 * respectée</li>
+	 * </ul>
+	 * <p>
+	 * Ce voisinage permet de rééquilibrer les charges et d'explorer des
+	 * modifications inter-tournées simples.
+	 * @param sol 			 Solution courante à modifier
+	 */
+	private void deplacerClientEntreTournees( Solution sol )
 	{
 		if ( sol.getTournees().isEmpty() ) { return; }
 			
@@ -138,8 +153,26 @@ public class RecuitSimuleCVRP
 		}
 	}
 
-	// Échange deux clients entre tournées
-	private void mouvementSwap( Solution sol )
+	/**
+	 * Échange deux clients appartenant à deux tournées différentes.
+	 *
+	 * <p>
+	 * Étapes :
+	 * <ul>
+	 * <li>Sélectionne deux tournées distinctes</li>
+	 * <li>Sélectionne un client dans chacune</li>
+	 * <li>Échange les deux clients</li>
+	 * <li>Valide le mouvement uniquement si les capacités restent
+	 * respectées</li>
+	 * </ul>
+	 *
+	 * <p>
+	 * Ce voisinage permet une modification plus importante que le relocate en
+	 * réorganisant simultanément deux tournées.
+	 *
+	 * @param sol 		 Solution courante à modifier
+	 */
+	private void echangerClientsEntreTournees( Solution sol )
 	{
 		if ( sol.getTournees().size() < 2 ) { return; }
 
@@ -167,8 +200,25 @@ public class RecuitSimuleCVRP
 		}
 	}
 
-	// 2-opt intra pour une tournée
-	private void mouvement2OptIntra( Solution sol )
+	/**
+	 * Applique un mouvement 2-opt à l'intérieur d'une seule tournée.
+	 *
+	 * <p>
+	 * Étapes :
+	 * <ul>
+	 * <li>Sélectionne une tournée aléatoire</li>
+	 * <li>Choisit deux positions i et j</li>
+	 * <li>Inverse l'ordre des clients entre ces deux positions</li>
+	 * </ul>
+	 *
+	 * <p>
+	 * Ce mouvement améliore localement une tournée en supprimant des
+	 * croisements et en réduisant sa distance.
+	 *
+	 * @param sol
+	 *            Solution courante à modifier
+	 */
+	private void inverserSegmentDansTournee( Solution sol )
 	{
 		int 			t 		= random.nextInt( sol.getTournees().size() );
 		List<Noeud> 	route 	= sol.getTournees().get(t);
@@ -179,7 +229,26 @@ public class RecuitSimuleCVRP
 		Collections.reverse( route.subList( i, j ) );
 	}
 
-	private void mouvement2OptInter( Solution sol )
+	/**
+	 * Échange les segments terminaux de deux tournées distinctes.
+	 *
+	 * <p>
+	 * Étapes :
+	 * <ul>
+	 * <li>Sélectionne deux tournées différentes</li>
+	 * <li>Choisit un point de coupure dans chacune</li>
+	 * <li>Échange les segments situés après ces points</li>
+	 * <li>Valide le mouvement si les capacités sont respectées</li>
+	 * </ul>
+	 *
+	 * <p>
+	 * Ce voisinage explore des modifications structurelles importantes en
+	 * recomposant deux tournées.
+	 *
+	 * @param sol
+	 *            Solution courante à modifier
+	 */
+	private void echangerSegmentsEntreTournees( Solution sol )
 	{
 		if ( sol.getTournees().size() < 2 ) { return; }
 
@@ -214,7 +283,25 @@ public class RecuitSimuleCVRP
 		}
 	}
 
-	private void mouvementOrOpt( Solution sol )
+	/**
+	 * Déplace un petit segment (1 à 2 clients) à l'intérieur d'une même
+	 * tournée.
+	 *
+	 * <p>
+	 * Étapes :
+	 * <ul>
+	 * <li>Sélectionne une tournée</li>
+	 * <li>Extrait un segment court (1 ou 2 clients)</li>
+	 * <li>Réinsère ce segment à une autre position de la même tournée</li>
+	 * </ul>
+	 *
+	 * <p>
+	 * Ce mouvement, appelé Or-opt, permet un ajustement fin de l'ordre des
+	 * clients dans une tournée.
+	 *
+	 * @param sol 		 Solution courante à modifier
+	 */
+	private void relocaliserSegmentDansTournee( Solution sol )
 	{
 		int 			r 		= random.nextInt( sol.getTournees().size() );
 		List<Noeud> 	route 	= sol.getTournees().get(r);
